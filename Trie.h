@@ -44,8 +44,6 @@ public:
         _node *leftChild, *rightChild;
     };
 
-
-
 private:
     _node<T> root;
 
