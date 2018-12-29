@@ -7,10 +7,10 @@
 // Compiler and C++ Version: GNU GCC / C++14 Standard
 //============================================================================
 
-
 #ifndef TRIE_H_INCLUDED
 #define TRIE_H_INCLUDED
 #include <iostream>
+#include <string>
 #include <map>
 
 template <class T, class E=char> class Trie {
@@ -21,10 +21,11 @@ public:
     typedef std::pair<const key_type, T> value_type;
     typedef T mapped_type;
     typedef trieIterator iterator;
+    const char lastChar = '#';
 
     class _node {
     public:
-        virtual bool insert() = 0;
+        virtual bool insert(const value_type& value) = 0;
         virtual bool clear() = 0;
         virtual bool erase(const key_type& value) = 0;
     };
@@ -35,7 +36,7 @@ public:
         Leaf(mapped_type &value){
             mWord = value;
         }
-        bool insert() = 0;
+        bool insert(const key_type& value) = 0;
         bool clear() = 0;
         bool erase(const key_type& value) = 0;
 
@@ -43,27 +44,50 @@ public:
 
     class InternalNode:public _node {
     public:
-        bool insert() {
-            return true;
+        std::map<E, _node*> mappyTheLittleMap;
+        bool insert(const value_type& value) {
+            try {
+                using namespace std;
+                auto key = std::get<0>(value);
+                string str_key = string(key) + "#";
+                auto val = std::get<1>(value);
+                std::cout << key << std::endl << val << std::endl;
+                for(char& currentChar : str_key) {
+                    if(key.length() > 1 && !currentChar == '#') {
+                        if() {
+                            //mappyTheLittleMap.insert();
+                            continue;
+                        } else  {
+
+                        }
+                    } else if (key.length() > 1 && currentChar == '#') {
+                        //mappyTheLittleMap.insert(std::pair<E, _node*>('#',Leaf(value)));
+                        continue;
+                    } else {
+                        continue;
+                    }
+                }
+                return true;
+            } catch (...) {
+                using namespace std;
+                cout << "An internal error Occurred" << endl;
+                return false;
+            }
         }
+
         bool clear() {
             return true;
         }
         bool erase(const key_type& value){
             return true;
         }
-        std::map<E, _node*> mappyTheLittleMap;
+
     };
 
     class TrieIterator {
 
 
     };
-
-    /**
-    * Constructor
-    Trie ();
-    */
 
     /**
     * Method to return whether the Map isEmpty or not
@@ -74,7 +98,10 @@ public:
     }
 
 
-    iterator insert(const value_type& value);
+    iterator insert(const value_type& value) {
+        root.insert(value);
+    }
+
 
     /**
     *
@@ -95,7 +122,9 @@ public:
     iterator lower_bound(const key_type& testElement);
     iterator upper_bound(const key_type& testElement);
     iterator find(const key_type& testElement);
+
     iterator begin();
+
     iterator end();
 
 private:

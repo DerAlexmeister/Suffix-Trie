@@ -41,7 +41,7 @@ int main() {
                 eingabe = 0;
                 break;
             default:
-                std::cout << "wrong input, please enter another number";
+                std::cout << "wrong input, please enter another number" << std::endl;
                 break;
         }
     }
@@ -57,7 +57,7 @@ int input() {
     cout << "(2) Delete word " << endl;
     cout << "(3) Delete all " << endl;
     cout << "(4) Print tree " << endl;
-    cout << "(5) Check whether a \'Trie\' is empty or not" << endl;
+    cout << "(5) Check whether the \'Trie\' is empty or not" << endl;
     cout << "(6) Done" << endl;
     cout << "Enter a number: " << endl;
     cin >> eingabe;
