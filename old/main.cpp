@@ -19,7 +19,6 @@ void eraseAll();
 
 int main() {
     int eingabe = -1;
-
     while (eingabe != 0){
         eingabe = input();
         switch(eingabe){
@@ -33,7 +32,7 @@ int main() {
                 eraseAll();
                 break;
             case 4:
-                void show();
+                show();
                 break;
             case 5:
                 eingabe = 0;

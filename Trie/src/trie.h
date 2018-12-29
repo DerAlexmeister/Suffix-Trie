@@ -1,0 +1,5 @@
+#ifndef TRIE_H_INCLUDED
+#define TRIE_H_INCLUDED
+
+
+#endif // TRIE_H_INCLUDED
