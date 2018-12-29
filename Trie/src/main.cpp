@@ -3,7 +3,7 @@
 // Author      : Alexander M. Westphal / Paul Schröder
 // Version     : Alpha v0.1
 // Copyright   : Alexander M. Westphal / Paul Schröder
-// Description : ..., Ansi-style
+// Description : Main-Program
 //============================================================================
 
 #include <iostream>
@@ -36,7 +36,7 @@ int main() {
                 eingabe = 0;
                 break;
             default:
-                std::cout << "falsche eingabe";
+                std::cout << "wrong input, please enter another number";
                 break;
         }
     }

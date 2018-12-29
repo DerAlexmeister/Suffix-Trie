@@ -3,7 +3,7 @@
 // Author      :
 // Version     : Version 1.0
 // Copyright   :
-// Description : Main Program
+// Description : Trie.h Template
 // Compiler and C++ Version: GNU GCC / C++14 Standard
 //============================================================================
 
@@ -11,117 +11,90 @@
 #ifndef TRIE_H_INCLUDED
 #define TRIE_H_INCLUDED
 #include <iostream>
+#include <map>
 
 template <class T, class E=char> class Trie {
 
 public:
+    class trieIterator;
     typedef std::basic_string <E> key_type;
     typedef std::pair<const key_type, T> value_type;
     typedef T mapped_type;
-    typedef mapped_type iterator;
+    typedef trieIterator iterator;
 
-    template<mapped_type> class _node {
-
+    class _node {
     public:
-
-        _node(T value, _node* left = nullptr, _node* right = nullptr) : val(value), leftChild(left), rightChild(right) {}
-
-        _node*& left() {
-            return leftChild;
-        }
-
-        _node*& right() {
-            return rightChild;
-        }
-
-        T& value() {
-            return val;
-        }
-
-    private:
-        T val;
-        _node *leftChild, *rightChild;
+        virtual bool insert() = 0;
+        virtual bool clear() = 0;
+        virtual bool erase(const key_type& value) = 0;
     };
 
-private:
-    _node<T> root;
+    class Leaf:public _node {
+    public:
+        mapped_type& mWord;
+        Leaf(mapped_type &value){
+            mWord = value;
+        }
+        bool insert();
+        bool clear();
+        bool erase(const key_type& value);
+
+    };
+
+    class InternalNode:public _node {
+    public:
+        bool insert();
+        bool clear();
+        bool erase(const key_type& value);
+        std::map<E, _node*> mappyTheLittleMap;
+    };
+
+    class TrieIterator {
+
+
+    };
 
     /**
-     * Method to check whether a Trie has no leaves or not.
-     * @return will return true in case the trie has no leaves
-     */
+    * Constructor
+    */
+    Trie ();
+
+    /**
+    * Method to return whether the Map isEmpty or not
+    */
     bool empty() const {
-        return true;
-    }
-
-    /**
-     *
-     * @param value
-     * @return
-     */
-    iterator insert(const value_type &value) {
-
+        return root.mappyTheLittleMap.size() == 0;
     }
 
 
+    iterator insert(const value_type& value);
+
     /**
-     *
-     * @param value
-     */
+    *
+    */
     void erase(const key_type& value) {
-
+        root.erase(value);
     }
 
-    /**
-     *
-     */
+
     void clear() {
-
+        try {
+            root = nullptr;
+        } catch(...) {
+            std::cout << "an error occurred" << std::endl;
+        }
     }
 
-    /**
-     *
-     * @param testElement
-     * @return
-     */
-    iterator lower_bound(const key_type& testElement) {
+    iterator lower_bound(const key_type& testElement);
+    iterator upper_bound(const key_type& testElement);
+    iterator find(const key_type& testElement);
+    iterator begin();
+    iterator end();
 
-    }
-
-    /**
-     *
-     * @param testElement
-     * @return
-     */
-    iterator upper_bound(const key_type& testElement) {
-
-    }
-
-    /**
-     *
-     * @param testElement
-     * @return
-     */
-    iterator find(const key_type& testElement) {
-
-    }
-
-    /**
-     *
-     * @return
-     */
-    iterator begin() {
-
-    }
-
-
-    /**
-     *
-     * @return
-     */
-    iterator end() {
-
-    }
+private:
+    InternalNode root;
 };
+
+
 
 #endif // TRIE_H_INCLUDED
