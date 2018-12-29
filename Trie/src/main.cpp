@@ -7,7 +7,9 @@
 //============================================================================
 
 #include <iostream>
-#include "Trie.h"
+#include "trie.h"
+
+Trie<int,char> baum;
 
 int input();
 void insertObject();
@@ -33,6 +35,9 @@ int main() {
                 show();
                 break;
             case 5:
+                std::cout << std::boolalpha << "It the \'Trie\' empty? Answer: " <<  baum.empty() << std::noboolalpha << std::endl;
+                break;
+            case 6:
                 eingabe = 0;
                 break;
             default:
@@ -52,7 +57,8 @@ int input() {
     cout << "(2) Delete word " << endl;
     cout << "(3) Delete all " << endl;
     cout << "(4) Print tree " << endl;
-    cout << "(5) Done" << endl;
+    cout << "(5) Check whether a \'Trie\' is empty or not" << endl;
+    cout << "(6) Done" << endl;
     cout << "Enter a number: " << endl;
     cin >> eingabe;
     return eingabe;

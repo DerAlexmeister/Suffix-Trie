@@ -35,17 +35,23 @@ public:
         Leaf(mapped_type &value){
             mWord = value;
         }
-        bool insert();
-        bool clear();
-        bool erase(const key_type& value);
+        bool insert() = 0;
+        bool clear() = 0;
+        bool erase(const key_type& value) = 0;
 
     };
 
     class InternalNode:public _node {
     public:
-        bool insert();
-        bool clear();
-        bool erase(const key_type& value);
+        bool insert() {
+            return true;
+        }
+        bool clear() {
+            return true;
+        }
+        bool erase(const key_type& value){
+            return true;
+        }
         std::map<E, _node*> mappyTheLittleMap;
     };
 
@@ -56,14 +62,15 @@ public:
 
     /**
     * Constructor
-    */
     Trie ();
+    */
 
     /**
     * Method to return whether the Map isEmpty or not
     */
     bool empty() const {
-        return root.mappyTheLittleMap.size() == 0;
+        using namespace std;
+        return root.mappyTheLittleMap.empty();
     }
 
 

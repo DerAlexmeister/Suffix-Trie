@@ -34,6 +34,7 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="src/main.cpp" />
+		<Unit filename="src/trie.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
