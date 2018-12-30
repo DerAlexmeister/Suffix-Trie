@@ -16,6 +16,8 @@
 template <class T, class E=char> class Trie {
 
 public:
+    class InternalNode;
+    InternalNode root();
     class trieIterator;
     typedef std::basic_string <E> key_type;
     typedef std::pair<const key_type, T> value_type;
@@ -44,13 +46,6 @@ public:
     class InternalNode:public _node {
     public:
         std::map<E, _node*> mappyTheLittleMap;
-
-        E mPath;
-
-        InternalNode(E path){
-            mPath = path;
-        }
-
         bool insert(const value_type& value) {
             try {
                 using namespace std;
@@ -60,28 +55,22 @@ public:
                 cout << key << std::endl << val << endl;
                 _node* current = root;
                 _node* next;
-
-                // Wort hat mindestens die Laenge 1
                 if(key.length() > 1) {
                     for(char& currentChar : str_key) {
-                        // aktueller Buchstabe ist nicht das Endzeichen
                         if(!currentChar == '#') {
-                            // aktueller Buchstabe ist in Map von current nicht enthalten. Fuege neue Node hinzu.
                             if(current.mappyTheLittleMap.find(currentChar) != current.mappyTheLittleMap.end()) {
-                                next = InternalNode(currentChar);
-                                current.mappyTheLittleMap.insert(std::pair<E, _node*>(currentChar,next);
+                                next = InternalNode();
+                                current.mappyTheLittleMap.insert(std::pair<E, _node*>(currentChar,next));
                                 current = next;
-                                // aktueller Buchstabe ist bereits in Map von current enthalten. Setze current auf die Node des Buchstaben.
                             } else  {
                                 current = current.mappyTheLittleMap.find(currentChar).get<1>(value);
                             }
-                            // Ende des Baums (#) -> insert Leaf
                         } else {
+                _node* current = root;
                             current.mappyTheLittleMap.insert(pair<E, _node*>(currentChar,Leaf(value)));
                         }
                     }
                     return true;
-                    // Wort hat die Laenge 1
                 }else {
                     cout << "Word cant have a length of zero" << endl;
                     return false;
@@ -117,21 +106,6 @@ public:
     };
 
     class TrieIterator {
-    public:
-
-        ListIterator() {
-
-        }
-
-        T& operator *() {}
-
-        iterator& operator = (const iterator& rhs){}
-
-        bool operator != (const iterator& rhs) const{}
-
-        bool operator == (const iterator& rhs) const{}
-
-        iterator& operator ++(){}
     };
 
     /**
@@ -177,9 +151,6 @@ public:
     void showTrie() {
 
     }
-
-private:
-    InternalNode root;
 };
 
 #endif // TRIE_H_INCLUDED

@@ -12,7 +12,7 @@
 #include "trie.h"
 
 // The Trie
-Trie<int,char> baum;
+Trie<int, char> baum;
 
 int input();
 void insertObject();
