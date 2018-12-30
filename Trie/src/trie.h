@@ -17,7 +17,7 @@ template <class T, class E=char> class Trie {
 
 public:
     class InternalNode;
-    InternalNode root();
+    InternalNode root ();
     class trieIterator;
     typedef std::basic_string <E> key_type;
     typedef std::pair<const key_type, T> value_type;
@@ -53,11 +53,11 @@ public:
                 string str_key = string(key) + "#";
                 auto val = std::get<1>(value);
                 cout << key << std::endl << val << endl;
-                _node* current = root;
-                _node* next;
+                InternalNode * current = root;
+                InternalNode * next;
                 if(key.length() > 1) {
                     for(char& currentChar : str_key) {
-                        if(!currentChar == '#') {
+                        if(!currentChar == '#' || !current.mappyTheLittleMap.empty()) {
                             if(current.mappyTheLittleMap.find(currentChar) != current.mappyTheLittleMap.end()) {
                                 next = InternalNode();
                                 current.mappyTheLittleMap.insert(std::pair<E, _node*>(currentChar,next));
@@ -66,7 +66,7 @@ public:
                                 current = current.mappyTheLittleMap.find(currentChar).get<1>(value);
                             }
                         } else {
-                _node* current = root;
+                            _node* current = root;
                             current.mappyTheLittleMap.insert(pair<E, _node*>(currentChar,Leaf(value)));
                         }
                     }
@@ -84,7 +84,7 @@ public:
 
         bool clear(){
             try {
-                root.mappyTheLittleMap.clear();
+                mappyTheLittleMap.clear();
                 return true;
             }catch(...) {
                 using namespace std;
@@ -103,6 +103,10 @@ public:
             }
         }
 
+        bool empty() {
+            return mappyTheLittleMap.empty();
+        }
+
     };
 
     class TrieIterator {
@@ -112,8 +116,7 @@ public:
     * Method to return whether the Map isEmpty or not
     */
     bool empty() const {
-        using namespace std;
-        return root.mappyTheLittleMap.empty();
+        return root.empty();
     }
 
     /**
@@ -136,7 +139,7 @@ public:
     */
     void clear() {
         try {
-            root.mappyTheLittleMap.clear();
+            root.clear();
         } catch(...) {
             std::cout << "an error occurred" << std::endl;
         }

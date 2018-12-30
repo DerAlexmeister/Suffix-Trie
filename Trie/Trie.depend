@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1546164586 source:c:\users\alexw\desktop\gitprojects\algodat2\trie\src\main.cpp
+1546172485 source:c:\users\alexw\desktop\gitprojects\algodat2\trie\src\main.cpp
 	<iostream>
 	<thread>
 	<chrono>
 	"trie.h"
 
-1546172444 c:\users\alexw\desktop\gitprojects\algodat2\trie\src\trie.h
+1546175015 c:\users\alexw\desktop\gitprojects\algodat2\trie\src\trie.h
 	<iostream>
 	<string>
 	<map>
