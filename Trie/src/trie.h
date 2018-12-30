@@ -112,6 +112,7 @@ public:
 
     };
 
+
     class TrieIterator {
     public:
 
@@ -139,14 +140,16 @@ public:
         return root.mappyTheLittleMap.empty();
     }
 
-
+    /**
+    *   Insert a single InternalNode or Leaf.
+    */
     iterator insert(const value_type& value) {
         root.insert(value);
     }
 
 
     /**
-    *
+    *   Delete a single InternalNode or a Leaf.
     */
     void erase(const key_type& value) {
         root.erase(value);
@@ -169,6 +172,11 @@ public:
     iterator find(const key_type& testElement);
     iterator begin();
     iterator end();
+
+    void showTrie() {
+
+    }
+
 
 private:
     InternalNode root;

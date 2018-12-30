@@ -7,8 +7,11 @@
 //============================================================================
 
 #include <iostream>
+#include <thread>
+#include <chrono>
 #include "trie.h"
 
+// The Trie
 Trie<int,char> baum;
 
 int input();
@@ -17,65 +20,66 @@ void deleteObject();
 void eraseAll();
 void show();
 
+/**
+*  Main Method to work with the Trie.
+*/
 int main() {
     int eingabe = -1;
     while (eingabe != 0){
         eingabe = input();
         switch(eingabe){
             case 1:
-                insertObject();
+                using namespace std;
+                cout << endl << endl;
                 break;
             case 2:
-                deleteObject();
+                using namespace std;
+                cout << endl << endl;
                 break;
             case 3:
-                eraseAll();
+                baum.clear();
+                using namespace std;
+                cout << "You just cleared the \'Trie\'" << endl << endl;
                 break;
             case 4:
-                show();
+                baum.showTrie();
+                using namespace std;
+                cout << "This is your \'Trie\'. Have fun!" << endl << endl;
                 break;
             case 5:
                 std::cout << std::boolalpha << "It the \'Trie\' empty? Answer: " <<  baum.empty() << std::noboolalpha << std::endl;
                 break;
             case 6:
-                eingabe = 0;
-                break;
+                using namespace std;
+                cout << "Good by and see you later ...." << endl;
+                this_thread::sleep_for (chrono::seconds(3));
+                return 0;
             default:
-                std::cout << "wrong input, please enter another number" << std::endl;
+                using namespace std;
+                cout << "Wrong input, please enter another number between 1. - 6." << endl;
+                cout << endl << endl;
                 break;
         }
     }
     return 0;
 }
 
-
+/**
+*  Menu for the Trie.
+*/
 int input() {
     using namespace std;
     int eingabe;
-    cout << "Menu:" << endl;
-    cout << "(1) Insert word " << endl;
-    cout << "(2) Delete word " << endl;
-    cout << "(3) Delete all " << endl;
-    cout << "(4) Print tree " << endl;
+    cout << "================================= Menu ====================================" << endl;
+    cout << "(1) Insert a word " << endl;
+    cout << "(2) Delete a word " << endl;
+    cout << "(3) Delete the hole \'Trie\' " << endl;
+    cout << "(4) Print the hole \'Trie\' " << endl;
     cout << "(5) Check whether the \'Trie\' is empty or not" << endl;
-    cout << "(6) Done" << endl;
-    cout << "Enter a number: " << endl;
+    cout << "(6) Go home and do something else ...." << endl;
+    cout << "===========================================================================" << endl;
+    cout << "Enter a number: ";
     cin >> eingabe;
     return eingabe;
 }
 
-void insertObject() {
-
-}
-
-void deleteObject() {
-
-}
-
-void eraseAll() {
-
-}
-
-void show(){
-
-}
