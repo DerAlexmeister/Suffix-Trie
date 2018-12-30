@@ -116,7 +116,7 @@ public:
     * Method to return whether the Map isEmpty or not
     */
     bool empty() const {
-        return root.empty();
+        //return root.empty();
     }
 
     /**
@@ -139,7 +139,7 @@ public:
     */
     void clear() {
         try {
-            root.clear();
+            //root.clear();
         } catch(...) {
             std::cout << "an error occurred" << std::endl;
         }
