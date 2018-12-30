@@ -44,32 +44,46 @@ public:
     class InternalNode:public _node {
     public:
         std::map<E, _node*> mappyTheLittleMap;
+
+        E mPath;
+
+        InternalNode(E path){
+            mPath = path;
+        }
+
         bool insert(const value_type& value) {
             try {
                 using namespace std;
-                auto key = std::get<0>(value);
+                auto key = get<0>(value);
                 string str_key = string(key) + "#";
                 auto val = std::get<1>(value);
-                std::cout << key << std::endl << val << std::endl;
+                cout << key << std::endl << val << endl;
+                _node* current = root;
+                _node* next;
                 for(char& currentChar : str_key) {
+                    // Wort hat mindestens die Laenge 1
                     if(key.length() > 1 && !currentChar == '#') {
-                        /*if() {
-                            //mappyTheLittleMap.insert();
-                            continue;
+                        // aktueller Buchstabe ist in Map nicht enthalten. Fuege neue Node hinzu
+                        if(current.mappyTheLittleMap.find(currentChar) != current.mappyTheLittleMap.end()) {
+                            next = InternalNode(currentChar);
+                            current.mappyTheLittleMap.insert(std::pair<E, _node*>(currentChar,next);
+                            current = next;
+                            // aktueller Buchstabe ist bereits in Map enthalten. Setze current auf die Node des Buchstaben.
                         } else  {
-
-                        }*/
+                            current = current.mappyTheLittleMap.find(currentChar).get<1>(value);
+                        }
+                        // Ende des Baums (#) -> insert Leaf
                     } else if (key.length() > 1 && currentChar == '#') {
-                        //mappyTheLittleMap.insert(std::pair<E, _node*>('#',Leaf(value)));
-                        continue;
+                        current.mappyTheLittleMap.insert(pair<E, _node*>(currentChar,Leaf(value)));
                     } else {
-                        continue;
+                        cout << "Word cant have a length of zero" << endl;
+                        return false;
                     }
                 }
                 return true;
             } catch (...) {
                 using namespace std;
-                cout << "An internal error Occurred" << endl;
+                cout << "An error occurred" << endl;
                 return false;
             }
         }
@@ -100,7 +114,22 @@ public:
 
 
     class TrieIterator {
+    public:
 
+
+        ListIterator() {
+
+        }
+
+        T& operator *() {}
+
+        iterator& operator = (const iterator& rhs){}
+
+        bool operator != (const iterator& rhs) const{}
+
+        bool operator == (const iterator& rhs) const{}
+
+        iterator& operator ++(){}
     };
 
     /**
