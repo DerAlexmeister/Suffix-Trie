@@ -60,27 +60,32 @@ public:
                 cout << key << std::endl << val << endl;
                 _node* current = root;
                 _node* next;
-                for(char& currentChar : str_key) {
-                    // Wort hat mindestens die Laenge 1
-                    if(key.length() > 1 && !currentChar == '#') {
-                        // aktueller Buchstabe ist in Map nicht enthalten. Fuege neue Node hinzu
-                        if(current.mappyTheLittleMap.find(currentChar) != current.mappyTheLittleMap.end()) {
-                            next = InternalNode(currentChar);
-                            current.mappyTheLittleMap.insert(std::pair<E, _node*>(currentChar,next);
-                            current = next;
-                            // aktueller Buchstabe ist bereits in Map enthalten. Setze current auf die Node des Buchstaben.
-                        } else  {
-                            current = current.mappyTheLittleMap.find(currentChar).get<1>(value);
+
+                // Wort hat mindestens die Laenge 1
+                if(key.length() > 1) {
+                    for(char& currentChar : str_key) {
+                        // aktueller Buchstabe ist nicht das Endzeichen
+                        if(!currentChar == '#') {
+                            // aktueller Buchstabe ist in Map von current nicht enthalten. Fuege neue Node hinzu.
+                            if(current.mappyTheLittleMap.find(currentChar) != current.mappyTheLittleMap.end()) {
+                                next = InternalNode(currentChar);
+                                current.mappyTheLittleMap.insert(std::pair<E, _node*>(currentChar,next);
+                                current = next;
+                                // aktueller Buchstabe ist bereits in Map von current enthalten. Setze current auf die Node des Buchstaben.
+                            } else  {
+                                current = current.mappyTheLittleMap.find(currentChar).get<1>(value);
+                            }
+                            // Ende des Baums (#) -> insert Leaf
+                        } else {
+                            current.mappyTheLittleMap.insert(pair<E, _node*>(currentChar,Leaf(value)));
                         }
-                        // Ende des Baums (#) -> insert Leaf
-                    } else if (key.length() > 1 && currentChar == '#') {
-                        current.mappyTheLittleMap.insert(pair<E, _node*>(currentChar,Leaf(value)));
-                    } else {
-                        cout << "Word cant have a length of zero" << endl;
-                        return false;
                     }
+                    return true;
+                    // Wort hat die Laenge 1
+                }else {
+                    cout << "Word cant have a length of zero" << endl;
+                    return false;
                 }
-                return true;
             } catch (...) {
                 using namespace std;
                 cout << "An error occurred" << endl;
@@ -99,7 +104,6 @@ public:
             }
         }
 
-
         bool erase(const key_type& value){
             try {
                 return true;
@@ -112,10 +116,8 @@ public:
 
     };
 
-
     class TrieIterator {
     public:
-
 
         ListIterator() {
 
@@ -147,7 +149,6 @@ public:
         root.insert(value);
     }
 
-
     /**
     *   Delete a single InternalNode or a Leaf.
     */
@@ -177,11 +178,8 @@ public:
 
     }
 
-
 private:
     InternalNode root;
 };
-
-
 
 #endif // TRIE_H_INCLUDED
