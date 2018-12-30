@@ -141,6 +141,11 @@ public:
     iterator begin();
     iterator end();
 
+    void showTrie() {
+
+    }
+
+
 private:
     InternalNode root;
 };
