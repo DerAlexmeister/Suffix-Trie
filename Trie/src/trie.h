@@ -36,10 +36,9 @@ public:
         Leaf(mapped_type &value){
             mWord = value;
         }
-        bool insert(const key_type& value) = 0;
+        bool insert(const value_type& value) = 0;
         bool clear() = 0;
         bool erase(const key_type& value) = 0;
-
     };
 
     class InternalNode:public _node {
@@ -54,12 +53,12 @@ public:
                 std::cout << key << std::endl << val << std::endl;
                 for(char& currentChar : str_key) {
                     if(key.length() > 1 && !currentChar == '#') {
-                        if() {
+                        /*if() {
                             //mappyTheLittleMap.insert();
                             continue;
                         } else  {
 
-                        }
+                        }*/
                     } else if (key.length() > 1 && currentChar == '#') {
                         //mappyTheLittleMap.insert(std::pair<E, _node*>('#',Leaf(value)));
                         continue;
@@ -75,17 +74,31 @@ public:
             }
         }
 
-        bool clear() {
-            return true;
+        bool clear(){
+            try {
+                mappyTheLittleMap.clear();
+                return true;
+            }catch(...) {
+                using namespace std;
+                cout << "An internal error Occurred" << endl;
+                return false;
+            }
         }
+
+
         bool erase(const key_type& value){
-            return true;
+            try {
+                return true;
+            }catch(...) {
+                using namespace std;
+                cout << "An internal error Occurred" << endl;
+                return false;
+            }
         }
 
     };
 
     class TrieIterator {
-
 
     };
 
@@ -110,10 +123,13 @@ public:
         root.erase(value);
     }
 
-
+    /**
+    * Method to clear the Tree.
+    * Except for the root.
+    */
     void clear() {
         try {
-            root = nullptr;
+            root.mappyTheLittleMap.clear();
         } catch(...) {
             std::cout << "an error occurred" << std::endl;
         }
@@ -122,9 +138,7 @@ public:
     iterator lower_bound(const key_type& testElement);
     iterator upper_bound(const key_type& testElement);
     iterator find(const key_type& testElement);
-
     iterator begin();
-
     iterator end();
 
 private:
