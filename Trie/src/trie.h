@@ -95,11 +95,11 @@ public:
 
         bool clear(){
             try {
-                mappyTheLittleMap.clear();
+                root.mappyTheLittleMap.clear();
                 return true;
             }catch(...) {
                 using namespace std;
-                cout << "An internal error Occurred" << endl;
+                cout << "Clear failed" << endl;
                 return false;
             }
         }
@@ -182,4 +182,8 @@ private:
     InternalNode root;
 };
 
+<<<<<<< HEAD
 #endif // TRIE_H_INCLUDED
+=======
+#endif // TRIE_H_INCLUDED
+>>>>>>> af9aa1c2885ebdb4385ec3c09652fbb6e3a143f5
