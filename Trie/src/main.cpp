@@ -11,6 +11,7 @@
 #include <chrono>
 #include "trie.h"
 
+// The Trie
 Trie<int,char> baum;
 
 int input();
@@ -19,6 +20,9 @@ void deleteObject();
 void eraseAll();
 void show();
 
+/**
+*  Main Method to work with the Trie.
+*/
 int main() {
     int eingabe = -1;
     while (eingabe != 0){
@@ -60,7 +64,9 @@ int main() {
     return 0;
 }
 
-
+/**
+*  Menu for the Trie.
+*/
 int input() {
     using namespace std;
     int eingabe;
