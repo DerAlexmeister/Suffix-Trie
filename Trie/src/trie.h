@@ -94,11 +94,26 @@ public:
         }
 
         bool erase(const key_type& value){
-            try {
-                return true;
-            }catch(...) {
-                using namespace std;
-                cout << "An internal error Occurred" << endl;
+            InternalNode* current = root;
+            InternalNode* deleteNode;
+            using namespace std;
+            auto key = get<0>(value);
+            string str_key = string(key) + "#";
+            auto val = std::get<1>(value);
+            cout << key << std::endl << val << endl;
+            if (!current.mappyTheLittleMap.empty()) {
+                for(char& currentChar : str_key) {
+                    if(current.mappyTheLittleMap.find(currentChar) != current.mappyTheLittleMap.end()) {
+                        if (current.mappyTheLittleMap.size() == 1) {
+                            deleteNode = current;
+                        }
+                    } else {
+                        return false;
+                    }
+                    current = current.mappyTheLittleMap.find(currentChar).get<1>(value);
+                }
+                deleteNode->clear();
+            } else {
                 return false;
             }
         }
@@ -117,6 +132,7 @@ public:
     */
     bool empty() const {
         //return root.empty();
+        return true;
     }
 
     /**
@@ -154,6 +170,15 @@ public:
     void showTrie() {
 
     }
+
+    /**
+    * Method to generate a PAIR.
+    */
+    static std::pair<key_type, mapped_type> createPair(std::string word, std::string meaning) {
+        return std::pair<key_type, mapped_type>(word, meaning);
+    }
+
+
 };
 
 #endif // TRIE_H_INCLUDED
