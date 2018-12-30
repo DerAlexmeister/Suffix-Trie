@@ -182,8 +182,4 @@ private:
     InternalNode root;
 };
 
-<<<<<<< HEAD
 #endif // TRIE_H_INCLUDED
-=======
-#endif // TRIE_H_INCLUDED
->>>>>>> af9aa1c2885ebdb4385ec3c09652fbb6e3a143f5
