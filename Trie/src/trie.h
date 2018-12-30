@@ -153,6 +153,4 @@ private:
     InternalNode root;
 };
 
-
-
 #endif // TRIE_H_INCLUDED
