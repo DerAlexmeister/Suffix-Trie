@@ -94,18 +94,22 @@ public:
         }
 
         bool erase(const key_type& value){
-            InternalNode* current = root;
-            InternalNode* deleteNode;
             using namespace std;
             auto key = get<0>(value);
             string str_key = string(key) + "#";
             auto val = std::get<1>(value);
             cout << key << std::endl << val << endl;
+            bool newDelete = true;
+            InternalNode* current = root;
+            InternalNode* deleteNode;
             if (!current.mappyTheLittleMap.empty()) {
                 for(char& currentChar : str_key) {
                     if(current.mappyTheLittleMap.find(currentChar) != current.mappyTheLittleMap.end()) {
-                        if (current.mappyTheLittleMap.size() == 1) {
+                        if (current.mappyTheLittleMap.size() == 1 && newDelete) {
                             deleteNode = current;
+                            newDelete = false;
+                        } else if (current.mappyTheLittleMap.size() > 1) {
+                            newDelete = true;
                         }
                     } else {
                         return false;
@@ -116,7 +120,7 @@ public:
             } else {
                 return false;
             }
-        }
+}
 
         bool empty() {
             return mappyTheLittleMap.empty();

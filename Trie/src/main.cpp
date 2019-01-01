@@ -39,7 +39,7 @@ int main() {
                 cout << endl << "Enter the translation of the word : " << "(" << word << ")" << endl;
                 getline(cin, word);
                 try {
-                    baum.insert(Trie<int,char>::createPair(word, meaning));
+                    //baum.insert(Trie<int,char>::createPair(word, meaning));
                     cout << "Added " << word << " to \'Trie\'";
                 }catch (...) {
                     cout << "unable to Add a Word";
@@ -49,6 +49,11 @@ int main() {
             case 2:
                 using namespace std;
                 getline(cin, word);
+                try {
+                    //baum.erase(Trie<int,char>::createPair(word, meaning));
+                } catch(...) {
+                    cout << "Unable to Delete this word" << endl;
+                }
                 cout << "Deleted " << word << " from the \'Trie\'" << endl << endl;
                 break;
             case 3:
