@@ -21,6 +21,7 @@ public:
     class Leaf;
     class trieIterator;
     static InternalNode root;
+
     typedef std::basic_string <E> key_type;
     typedef std::pair<const key_type, T> value_type;
     typedef T mapped_type;
@@ -42,6 +43,7 @@ public:
     }
 
     /**
+
     *   Delete a single InternalNode or a Leaf.
     */
     void erase(const key_type& value) {
@@ -59,6 +61,10 @@ public:
             std::cout << "an error occurred" << std::endl;
         }
     }
+
+    class TrieIterator {
+
+    };
 
     iterator lower_bound(const key_type& testElement);
     iterator upper_bound(const key_type& testElement);
@@ -98,8 +104,6 @@ public:
     class InternalNode:public _node {
     public:
         std::map<E, _node*> mappyTheLittleMap;
-
-
         bool insert(const value_type& value) {
             try {
                 using namespace std;
@@ -107,7 +111,7 @@ public:
                 string str_key = string(key) + "#";
                 auto val = std::get<1>(value);
                 cout << key << std::endl << val << endl;
-                InternalNode * current = root;
+                InternalNode * current = this;
                 InternalNode * next;
                 if(key.length() > 1) {
                     for(char& currentChar : str_key) {
@@ -120,12 +124,11 @@ public:
                                 current = current.mappyTheLittleMap.find(currentChar).get<1>(value);
                             }
                         } else {
-                            _node* current = root;
                             current.mappyTheLittleMap.insert(pair<E, _node*>(currentChar,Leaf(value)));
                         }
                     }
                     return true;
-                }else {
+                } else {
                     cout << "Word cant have a length of zero" << endl;
                     return false;
                 }
@@ -174,15 +177,12 @@ public:
             } else {
                 return false;
             }
-}
-
-        bool empty() const{
-            return mappyTheLittleMap.empty();
         }
 
-    };
+        bool empty(){
+            return this -> mappyTheLittleMap.empty();
+        }
 
-    class TrieIterator {
     };
 };
 
