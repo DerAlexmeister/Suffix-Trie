@@ -67,11 +67,10 @@ public:
     /**
     * Method to generate a PAIR.
     */
-
-    /*
-    static std::pair<key_type, mapped_type> createPair(std::string word, std::string meaning) {
-        return std::make_pair<key_type, mapped_type>(word, meaning);
-    } */
+    static std::pair<key_type , T> createPair(std::string word, T meaning) {
+        std::basic_string<E> wor  = word;
+        return std::make_pair<const key_type, T>(wor, meaning);
+    }
 
     class _node {
     public:
@@ -111,7 +110,7 @@ public:
                                 current.mappyTheLittleMap.insert(currentChar, *next);
                                 current = next;
                             } else  {
-                                current = current.mappyTheLittleMap.find(currentChar).Second;
+                                current = *current.mappyTheLittleMap.find(currentChar).Second;
                             }
                         } else {
                             mappyTheLittleMap.insert(currentChar,Leaf(value));
@@ -184,7 +183,7 @@ bool Trie<T, E>::InternalNode::erase(const Trie::key_type &value) {
             } else {
                 return false;
             }
-            current = current.mappyTheLittleMap.find(currentChar).second;
+            current = *current.mappyTheLittleMap.find(currentChar).second;
         }
         deleteNode.mappyTheLittleMap.clear();
     } else {

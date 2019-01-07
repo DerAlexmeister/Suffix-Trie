@@ -14,7 +14,7 @@
 #include "Trie.h"
 
 // The Trie
-Trie<std::string, char> baum;
+Trie<std::string> baum;
 int input();
 void insertObject();
 void deleteObject();
@@ -38,8 +38,7 @@ int main() {
                 cout << endl << "Enter the translation of the word : " << "(" << word << ")" << endl;
                 getline(cin, meaning);
                 try {
-                    pair<string, string> p = {word, meaning};
-                    baum.insert(p));
+                    baum.insert(Trie<string, char>::createPair(word, "m"));
                     cout << "Added " << word << " to \'Trie\'";
                 }catch (...) {
                     cout << "unable to Add a Word";
