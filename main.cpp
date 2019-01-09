@@ -1,19 +1,20 @@
 //============================================================================
 // Name        : main.cpp
-// Author      : Alexander M. Westphal / Paul Schröder
+// Author      : Alexander M. Westphal / Paul SchrÃ¶der
 // Version     : Alpha v0.1
-// Copyright   : Alexander M. Westphal / Paul Schröder
+// Copyright   : Alexander M. Westphal / Paul SchrÃ¶der
 // Description : Main-Program
 //============================================================================
 
 #include <iostream>
+#include <string>
 #include <thread>
 #include <chrono>
-#include "trie.h"
+#include <sstream>
+#include "Trie.h"
 
 // The Trie
-Trie<int,char> baum;
-
+Trie<std::string> baum;
 int input();
 void insertObject();
 void deleteObject();
@@ -25,16 +26,34 @@ void show();
 */
 int main() {
     int eingabe = -1;
+    std::string word;
+    std::string meaning;
     while (eingabe != 0){
         eingabe = input();
         switch(eingabe){
             case 1:
                 using namespace std;
+                cout << "Enter the word you wanna insert: ";
+                getline(cin, word);
+                cout << endl << "Enter the translation of the word : " << "(" << word << ")" << endl;
+                getline(cin, meaning);
+                try {
+                    baum.insert(Trie<string, char>::createPair(word, "m"));
+                    cout << "Added " << word << " to \'Trie\'";
+                }catch (...) {
+                    cout << "unable to Add a Word";
+                }
                 cout << endl << endl;
                 break;
             case 2:
                 using namespace std;
-                cout << endl << endl;
+                getline(cin, word);
+                try {
+                    baum.erase(word);
+                } catch(...) {
+                    cout << "Unable to Delete this word" << endl;
+                }
+                cout << "Deleted " << word << " from the \'Trie\'" << endl << endl;
                 break;
             case 3:
                 baum.clear();
@@ -50,6 +69,11 @@ int main() {
                 std::cout << std::boolalpha << "It the \'Trie\' empty? Answer: " <<  baum.empty() << std::noboolalpha << std::endl;
                 break;
             case 6:
+                std::cout << std::boolalpha << "Find a word " <<  baum.empty() << std::noboolalpha << std::endl; // find geht noch nicht
+                using namespace std;
+                getline(cin, word);
+                break;
+            case 7:
                 using namespace std;
                 cout << "Good by and see you later ...." << endl;
                 this_thread::sleep_for (chrono::seconds(3));
@@ -76,7 +100,8 @@ int input() {
     cout << "(3) Delete the hole \'Trie\' " << endl;
     cout << "(4) Print the hole \'Trie\' " << endl;
     cout << "(5) Check whether the \'Trie\' is empty or not" << endl;
-    cout << "(6) Go home and do something else ...." << endl;
+    cout << "(6) Find a word in the \'Trie\' " << endl;
+    cout << "(7) Go home and do something else ...." << endl;
     cout << "===========================================================================" << endl;
     cout << "Enter a number: ";
     cin >> eingabe;
