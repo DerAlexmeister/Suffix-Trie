@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <typeinfo>
 
 template <class T, class E=char> class Trie {
 
@@ -129,14 +130,16 @@ public:
         }
 
         bool clear(){
-            try {
-                mappyTheLittleMap.clear();
+            _node* next = mappyTheLittleMap.begin() -> second;
+            mappyTheLittleMap.clear();
+            delete this;
+            if (typeid(next).name() == InternalNode){
+                next->clear();
+            } else if (typeid(next).name() == Leaf){
+                delete next;
                 return true;
-            }catch(...) {
-                using namespace std;
-                cout << "Clear failed" << endl;
-                return false;
             }
+            return false;
         }
 
         bool erase(const key_type& value);
