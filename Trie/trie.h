@@ -64,49 +64,32 @@ public:
 		}
 
 		bool insert(const value_type& value) {
-			try {
-				using namespace std;
-				auto key = value.first;
-				auto val = value.second;
-				cout << key << std::endl << val << endl;
-				string str_key = key + "#";
-				InternalNode current = root;
-				_node* next;
-				if (key.length() > 1) {
-					for (char& currentChar : str_key) {
-						if (!currentChar == '#') {
-							if (current.mappyTheLittleMap.empty()
-									|| current.mappyTheLittleMap.find(
-											currentChar)
-											== current.mappyTheLittleMap.end()) {
-								next = InternalNode(current.mPath +=
-										currentChar);
-								current.mappyTheLittleMap.insert(currentChar,
-										next);
-								current = next;
-							} else {
-								current = current.mappyTheLittleMap.find(
-										currentChar)->second;
-							}
-						} else {
-							next = Leaf(val, current.mPath += currentChar);
-							mappyTheLittleMap.insert(currentChar, next);
-						}
-					}
-					return true;
-				} else {
-					cout << "Word cant have a length of zero" << endl;
-					return false;
-				}
-			} catch (...) {
-				using namespace std;
-				cout << "An error occurred" << endl;
-				return false;
-			}
+    		try {
+        		using namespace std;
+        		E currentChar = key[0];
+        		_node *next;
+        		if (!currentChar == '#') {
+	        		if (current.mappyTheLittleMap.empty() || current.mappyTheLittleMap.find(currentChar) == current.mappyTheLittleMap.end()) {
+		       			next = InternalNode(current.mPath += currentChar);
+		        		mappyTheLittleMap.insert(currentChar, next);
+	        		} else {
+                		next = mappyTheLittleMap.find(currentChar)->second;
+	        		}
+        		} else if (!mappyTheLittleMap.count(currentChar)) {
+	        		next = Leaf(val, current.mPath += currentChar);
+	        		mappyTheLittleMap.insert(currentChar, next);
+       			}
+        		next->insert(key.erase(0, 1), value);
+       			return true;
+    		} catch (...) {
+        		using namespace std;
+        		cout << "An error occurred" << endl;
+        		return false;
+    		}
 		}
 
 		void clearKlaus() {
-			for (mappy::iterator it=mappyTheLittleMap.begin(); it!=mappyTheLittleMap.end(); it++) {
+			for (typename mappy::iterator it=mappyTheLittleMap.begin(); it!=mappyTheLittleMap.end(); it++) {
 				it.second->clearKlaus();
 				delete it.second;
 			}
@@ -188,7 +171,6 @@ public:
 				E c = *ki(a);
 				stackyTheLittleStack.push(c);
 			}
-
 		}
 
 		/*
@@ -199,27 +181,23 @@ public:
 
 		T& operator*() {
 			return mNode->mPath;
-		}
-		;
+		};
 
 		bool operator !=(const TrieIterator& rhs) {
 			return !operator ==(rhs);
-		}
-		;
+		};
 
 		bool operator ==(const TrieIterator& rhs) {
 			return mMap == rhs.mMap;
-		}
-		;
+		};
+
 		/*
 		 * if (std::strcmp(typeid(next).name(),"InternalNode")==0){
 		 */
 		TrieIterator& operator ++() {
-			if (std::strcmp(typeid(mNode).name(), "Leaf") == 0
-					|| this->stackyTheLittleStack.empty()) {
+			if (std::strcmp(typeid(mNode).name(), "Leaf") == 0 || this->stackyTheLittleStack.empty()) {
 				iterator ab;
-				while (std::strcmp(typeid(mNode).name(), "Leaf") == 0
-						|| this->stackyTheLittleStack.empty()) {
+				while (std::strcmp(typeid(mNode).name(), "Leaf") == 0 || this->stackyTheLittleStack.empty()) {
 					ab = operator--();
 				}
 				iterator cb(mMap.find(stackyTheLittleStack.top())->second);
@@ -231,14 +209,13 @@ public:
 				stackyTheLittleStack.pop();
 				return cb;
 			}
-		}
-		;
+		};
+
 		iterator& operator --() {
 			key_type wo = mNode->mPath;
 			key_type res = wo.substr(0, wo.size() - 1);
 			return iterator(find(res));
-		}
-		;
+		};
 
 	};
 
@@ -253,6 +230,7 @@ public:
 	 *   Insert a single InternalNode or Leaf.
 	 */
 	iterator insert(const value_type& value) {
+		value.first = value.first + "#";	
 		return root.insert(value);
 	}
 
@@ -268,9 +246,7 @@ public:
 	 * Except for the root.
 	 */
 	void clear() {
-
 		root.clearKlaus();
-
 	}
 
 	/**
