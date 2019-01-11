@@ -68,7 +68,7 @@ int main() {
                 std::cout << std::boolalpha << "It the \'Trie\' empty? Answer: " <<  baum.empty() << std::noboolalpha << std::endl;
                 break;
             case 6:
-                std::cout << std::boolalpha << "Find a word " <<  baum.empty() << std::noboolalpha << std::endl; // find geht noch nicht
+                std::cout << std::boolalpha << "Find a word " <<  baum.empty() << std::noboolalpha << std::endl;
                 using namespace std;
                 getline(cin, word);
                 break;

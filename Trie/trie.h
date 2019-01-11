@@ -18,12 +18,11 @@
 
 template<class T, class E = char> class Trie {
 
-public:
+public:	
 	class _node;
 	class InternalNode;
 	class Leaf;
 	class TrieIterator;
-
 	typedef std::basic_string<E> key_type;
 	typedef std::pair<const key_type, T> value_type;
 	typedef T mapped_type;
@@ -37,7 +36,7 @@ public:
 		virtual bool insert(const value_type& value) = 0;
 		virtual bool clear() = 0;
 		virtual bool erase(const key_type& value) = 0;
-		virtual bool clearKlausi() = 0;
+		virtual void clearKlausi() = 0;
 	};
 
 	class Leaf: public _node {
@@ -50,10 +49,19 @@ public:
 			mPath = path;
 		}
 
-		bool insert(const value_type& value) = 0;
-		bool clear() = 0;
-		bool erase(const key_type& value) = 0;
-		bool clearKlausi() = 0;
+		bool insert(const value_type& value) {
+			return false;
+		}
+
+		bool clear(){
+			return false;
+		}
+
+		bool erase(const key_type& value) {
+			return false;
+		}
+
+		void clearKlausi() {}
 	};
 
 	class InternalNode: public _node {
@@ -90,10 +98,10 @@ public:
     		}
 		}
 
-		void clearKlaus() {
+		void clearKlausi() {
 			if (!root.mappyTheLittleMap.empty()) {
 				for (typename mappy::iterator it=mappyTheLittleMap.begin(); it!=mappyTheLittleMap.end(); it++) {
-					it -> second -> clearKlaus();
+					it -> second -> clearKlausi();
 					delete it -> second;
 				}
 				mappyTheLittleMap.clear();
@@ -144,9 +152,7 @@ public:
 					} else {
 						return false;
 					}
-					current =
-							current.mappyTheLittleMap.find(currentChar)->second;
-
+					current = current.mappyTheLittleMap.find(currentChar)->second;
 				}
 				deleteNode.clear();
 			} else {
@@ -245,7 +251,7 @@ public:
 	 */
 	void clear() {
 		try {
-			root.clearKlaus();
+			root.clearKlausi();
 		} catch(...) {
 			std::cout << "Root has no children yet! \n";
 		}
