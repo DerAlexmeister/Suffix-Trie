@@ -1,6 +1,6 @@
 //============================================================================
 // Name        : Trie.h
-// Author      :
+// Author      : Alexander M. Westphal / Paul Schroeder / Klaus Riedl
 // Version     : Version 1.0
 // Copyright   :
 // Description : Trie.h Template

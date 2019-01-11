@@ -1,8 +1,8 @@
 //============================================================================
 // Name        : main.cpp
-// Author      : Alexander M. Westphal / Paul Schröder
+// Author      : Alexander M. Westphal / Paul Schroeder / Klaus Riedl
 // Version     : Alpha v0.1
-// Copyright   : Alexander M. Westphal / Paul Schröder
+// Copyright   :
 // Description : Main-Program
 //============================================================================
 
