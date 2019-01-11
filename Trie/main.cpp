@@ -13,7 +13,6 @@
 #include <sstream>
 #include "Trie.h"
 
-// The Trie
 Trie<std::string> baum;
 int input();
 void insertObject();
@@ -38,7 +37,7 @@ int main() {
                 cout << endl << "Enter the translation of the word : " << "(" << word << ")" << endl;
                 getline(cin, meaning);
                 try {
-                    baum.insert(Trie<string, char>::createPair(word, "m"));
+                    //baum.insert(Trie<string, char>::createPair(word, "m"));
                     cout << "Added " << word << " to \'Trie\'";
                 }catch (...) {
                     cout << "unable to Add a Word";
@@ -49,7 +48,7 @@ int main() {
                 using namespace std;
                 getline(cin, word);
                 try {
-                    baum.erase(word);
+                    //baum.erase(word);
                 } catch(...) {
                     cout << "Unable to Delete this word" << endl;
                 }
@@ -61,7 +60,7 @@ int main() {
                 cout << "You just cleared the \'Trie\'" << endl << endl;
                 break;
             case 4:
-                baum.showTrie();
+                //baum.showTrie();
                 using namespace std;
                 cout << "This is your \'Trie\'. Have fun!" << endl << endl;
                 break;
@@ -76,7 +75,6 @@ int main() {
             case 7:
                 using namespace std;
                 cout << "Good by and see you later ...." << endl;
-                this_thread::sleep_for (chrono::seconds(3));
                 return 0;
             default:
                 using namespace std;

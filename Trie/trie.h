@@ -37,6 +37,7 @@ public:
 		virtual bool insert(const value_type& value) = 0;
 		virtual bool clear() = 0;
 		virtual bool erase(const key_type& value) = 0;
+		virtual bool clearKlausi() = 0;
 	};
 
 	class Leaf: public _node {
@@ -52,6 +53,7 @@ public:
 		bool insert(const value_type& value) = 0;
 		bool clear() = 0;
 		bool erase(const key_type& value) = 0;
+		bool clearKlausi() = 0;
 	};
 
 	class InternalNode: public _node {
@@ -66,20 +68,20 @@ public:
 		bool insert(const value_type& value) {
     		try {
         		using namespace std;
-        		E currentChar = key[0];
+        		E currentChar = value.first[0];
         		_node *next;
         		if (!currentChar == '#') {
-	        		if (current.mappyTheLittleMap.empty() || current.mappyTheLittleMap.find(currentChar) == current.mappyTheLittleMap.end()) {
-		       			next = InternalNode(current.mPath += currentChar);
+	        		if (mappyTheLittleMap.empty() || mappyTheLittleMap.find(currentChar) == mappyTheLittleMap.end()) {
+		       			next = InternalNode(mPath += currentChar);
 		        		mappyTheLittleMap.insert(currentChar, next);
 	        		} else {
                 		next = mappyTheLittleMap.find(currentChar)->second;
 	        		}
         		} else if (!mappyTheLittleMap.count(currentChar)) {
-	        		next = Leaf(val, current.mPath += currentChar);
+	        		next = Leaf(value.second, mPath += currentChar);
 	        		mappyTheLittleMap.insert(currentChar, next);
        			}
-        		next->insert(key.erase(0, 1), value);
+        		next->insert(value.first.erase(0, 1), value);
        			return true;
     		} catch (...) {
         		using namespace std;
@@ -89,11 +91,13 @@ public:
 		}
 
 		void clearKlaus() {
-			for (typename mappy::iterator it=mappyTheLittleMap.begin(); it!=mappyTheLittleMap.end(); it++) {
-				it.second->clearKlaus();
-				delete it.second;
+			if (!root.mappyTheLittleMap.empty()) {
+				for (typename mappy::iterator it=mappyTheLittleMap.begin(); it!=mappyTheLittleMap.end(); it++) {
+					it -> second -> clearKlaus();
+					delete it -> second;
+				}
+				mappyTheLittleMap.clear();
 			}
-			mappyTheLittleMap.clear();
 		}
 
 		bool clear() {
@@ -164,20 +168,14 @@ public:
 		mappy mMap;
 		TrieIterator(_node* node) {
 			mNode = node;
-			mMap = mNode->mappyTheLittleMap;
-			auto ki = mappyTheLittleMap.begin();
-			for (ki; ki != mappyTheLittleMap.end(); ki++) {
+			mMap = mNode -> mappyTheLittleMap;
+			auto ki = mMap.begin();
+			for (ki; ki != mMap.end(); ki++) {
 				int a = *ki.length() - 1;
 				E c = *ki(a);
 				stackyTheLittleStack.push(c);
 			}
 		}
-
-		/*
-		 * auto ki = mappyTheLittleMap.begin();
-		 for(ki;ki != mappyTheLittleMap.end();ki++){
-		 }
-		 */
 
 		T& operator*() {
 			return mNode->mPath;
@@ -246,30 +244,35 @@ public:
 	 * Except for the root.
 	 */
 	void clear() {
-		root.clearKlaus();
+		try {
+			root.clearKlaus();
+		} catch(...) {
+			std::cout << "Root has no children yet! \n";
+		}
 	}
 
 	/**
 	 *  Method to
 	 *
 	 */
-	//void showTrie() {
-	//	iterator it = begin();
-	//	std::string word = "";
-	//	while(it != end())  {
-	//		int a = *it.length() - 1;
-	//		E character = *it(a);
-	//		if(character == "#") {
-	//			it++
-	//			std::string path = *it;
-	//			std::cout << word << "------->" << path << std::endl;
-	//			word = "";
-	//		} else {
-	//			word += character;
-	//			it++;
-	//		}
-	//	}
-	//}
+	void showTrie() {
+		iterator it = begin();
+		std::string word = "";
+		while(it != end())  {
+			int a = *it.length() - 1;
+			E character = *it(a);
+			if(character == "#") {
+				it++;
+				T path = *it;
+				std::cout << word << "------->" << path << std::endl;
+				word = "";
+			} else {
+				word += character;
+				it++;
+			}
+		}
+	}
+	
 	iterator lower_bound(const key_type& testElement) {
 		return iterator(); //dont need
 	}
