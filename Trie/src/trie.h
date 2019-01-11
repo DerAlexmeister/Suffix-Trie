@@ -146,8 +146,14 @@ public:
 
     class TrieIterator {
     public:
-        TrieIterator(_node *boobs) {
-            booze = boobs;
+        _node* mNode;
+        mappy mMap;        
+        TrieIterator(_node* node) {
+            mNode = node;
+            mMap = mNode -> mappyTheLittleMap;
+            for(mMap::iterator it = mMap.begin(); it != mMap.end(); it++) {
+                itStacks.push(*it);  
+            }
         };
 
         TrieIterator() = default;
@@ -179,7 +185,7 @@ public:
 
     private:
     int booze;
-    std::stack<_node> stackyTheLittleStack;
+    std::stack<E> stackyTheLittleStack;
         Trie* mTrie;
     };
 
