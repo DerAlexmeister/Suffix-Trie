@@ -21,13 +21,13 @@ public:
     class _node;
     class InternalNode;
     class Leaf;
-    class trieIterator;
+    class TrieIterator;
 
     typedef std::basic_string <E> key_type;
     typedef std::pair<const key_type, T> value_type;
     typedef T mapped_type;
-    typedef trieIterator iterator;
-    typedef std::map<E, _node*> mappy
+    typedef TrieIterator iterator;
+    typedef std::map<E, _node*> mappy;
 
     const char lastChar = '#';
     static InternalNode root;
@@ -41,9 +41,9 @@ public:
 
     class Leaf:public _node {
     public:
-        mapped_type& mWord;
-        Leaf(mapped_type key, key_type value){
-            mWord = key;
+        int someInteger = 1;
+        key_type mMeaning;
+        Leaf(key_type value){
             mMeaning = value
         }
         bool insert(const value_type& value) = 0;
@@ -53,8 +53,9 @@ public:
 
     class InternalNode:public _node {
     public:
+        int someInterger = 0;
         mappy mappyTheLittleMap;
-
+        int someSize = mappyTheLittleMap.size();    
         E mPath;
 
         InternalNode(E path){
@@ -81,7 +82,7 @@ public:
                                 current = current.mappyTheLittleMap.find(currentChar) -> second;
                             }
                         } else {
-                            next = new Leaf(key, val)
+                            next = new Leaf(val);
                             mappyTheLittleMap.insert(currentChar, next);
                         }
                     }
@@ -119,9 +120,7 @@ public:
             InternalNode  current = *this;
             InternalNode deleteNode;
             if (!(current.mappyTheLittleMap.empty())) {
-                // suche nach Node mit size 1 unter der keine Verzweigung mehr ist
                 for(char& currentChar : str_key) {
-                // Buchstabe in Map von aktueller Node enthalten
                     if(current.mappyTheLittleMap.find(currentChar) != current.mappyTheLittleMap.end()) {
                         if (current.mappyTheLittleMap.size() == 1 && newDelete) {
                             deleteNode = current;
@@ -129,15 +128,12 @@ public:
                         } else if (current.mappyTheLittleMap.size() > 1) {
                             newDelete = true;
                         }
-                    // Wort nicht in Dictionary enthalten -> return false
                     } else {
                         return false;
                     }
-                // setzte current auf die naechste Node
                 current = current.mappyTheLittleMap.find(currentChar) -> second;
                 }
             deleteNode.clear();
-            // Dictionary ist leer -> return false
             } else {
                 return false;
             }
@@ -148,36 +144,45 @@ public:
         }
     };
 
-    class trieIterator {
+    class TrieIterator {
     public:
-        explicit TrieIterator(Trie* trie) {
-            mTrie = trie;
-            itStack.push(std::pair<typename mappy::iterator,typename mappy::iterator>(mTrie->begin(), mTrie->end()));
-            mMap = mTrie->mappyTheLittleMap;
+        TrieIterator(_node *boobs) {
+            booze = boobs;
         };
+
         TrieIterator() = default;
+        ~TrieIterator() = default;
+
         T& operator*() {
             return strVal;
         };
+
         bool operator !=(const  TrieIterator& rhs) {
             return !operator==(rhs);
         };
+
         bool operator ==(const TrieIterator& rhs) {
-            return mMap == rhs->mMap;
+            return mMap == rhs -> mMap;
         };
-        TrieIterator& operator ++(){};
-        iterator& operator --(){};
-        iterator operator++ ( int ){};
+
+        TrieIterator& operator ++(){
+
+
+        };
+        iterator& operator --(){
+
+        };
+
+        iterator operator++ (int){
+
+        };
 
     private:
-        std::stack<std::pair<typename mappy::iterator,typename mappy::iterator> > itStack;
+    int booze;
+    std::stack<_node> stackyTheLittleStack;
         Trie* mTrie;
-        mappy* mMap;
-        T strVal;
     };
 
-
-    
     /**
     * Method to return whether the Map isEmpty or not
     */
@@ -204,18 +209,49 @@ public:
     * Except for the root.
     */
     void clear() {
-  
+        
     }
     
+    /**
+     *  Method to 
+     * 
+     */
     void showTrie() {
-
+        iterator it = begin();
+        std::string word = "";
+        while(it != end())  {
+            char character = *it;
+            if(character == "#") {
+                it++
+                std::string character = *it;
+                std::cout << word << "------->" << character << std::endl;
+                word = "";
+            } else {
+                word += character;
+                it++;
+            }
+        }
     }
 
-    iterator lower_bound(const key_type& testElement);
-    iterator upper_bound(const key_type& testElement);
-    iterator find(const key_type& testElement);
-    iterator begin();
-    iterator end();
+    iterator lower_bound(const key_type& testElement) {
+        return iterator();
+    }
+
+    iterator upper_bound(const key_type& testElement) {
+        return iterator();
+    }
+
+    iterator find(const key_type& testElement) {
+        
+    }
+
+    iterator begin() {
+        return iterator();
+    }
+
+    iterator end() {
+        return iterator();
+    }
 
 };   
 
