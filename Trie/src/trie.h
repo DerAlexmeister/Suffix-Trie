@@ -41,24 +41,24 @@ public:
 
     class Leaf:public _node {
     public:
-        int someInteger = 1;
+        mappy mappyTheLittleMap;
         key_type mMeaning;
-        Leaf(key_type value){
+        T mPath;
+        Leaf(key_type value, T path){
             mMeaning = value
+            mPath = path;
         }
         bool insert(const value_type& value) = 0;
         bool clear() = 0;
-        bool erase(const key_type& value) = 0; // benötigt implementierung
+        bool erase(const key_type& value) = 0;
     };
 
     class InternalNode:public _node {
     public:
-        int someInterger = 0;
         mappy mappyTheLittleMap;
-        int someSize = mappyTheLittleMap.size();    
-        E mPath;
+        T mPath;
 
-        InternalNode(E path){
+        InternalNode(T path){
             mPath = path;
         }
 
@@ -68,21 +68,21 @@ public:
                 auto key = value.first;
                 auto val = value.second;
                 cout << key << std::endl << val << endl;
-                string str_key = string(key) + "#";
+                string str_key = string(key) + lastChar;
                 InternalNode current = this;
                 _node* next;
                 if(key.length() > 1) {
                     for(char& currentChar : str_key) {
                         if(!currentChar == '#') {
                             if(current.mappyTheLittleMap.empty() || current.mappyTheLittleMap.find(currentChar) == current.mappyTheLittleMap.end()) {
-                                next = new InternalNode(currentChar);
+                                next = InternalNode(current.mPath += currentChar);
                                 current.mappyTheLittleMap.insert(currentChar, next);
                                 current = next;
                             } else  {
                                 current = current.mappyTheLittleMap.find(currentChar) -> second;
                             }
                         } else {
-                            next = new Leaf(val);
+                            next = Leaf(val, current.mPath += currentChar);
                             mappyTheLittleMap.insert(currentChar, next);
                         }
                     }
@@ -110,6 +110,16 @@ public:
                 return true;
             }
             return false;
+        }
+
+        void clearTrie() {
+            auto iterator = mappyTheLittleMap.begin();
+            while (iterator != mappyTheLittleMap.end()) {
+                iterator -> second -> clear();
+                delete iterator -> second;
+                iterator++;
+            }
+            mappyTheLittleMap.clear();
         }
 
         bool erase(const key_type& value){
@@ -152,7 +162,9 @@ public:
             mNode = node;
             mMap = mNode -> mappyTheLittleMap;
             for(mMap::iterator it = mMap.begin(); it != mMap.end(); it++) {
-                itStacks.push(*it);  
+                int a = *it.length() - 1;
+                E c = *it(a);
+                itStacks.push(c);
             }
         };
 
@@ -160,11 +172,11 @@ public:
         ~TrieIterator() = default;
 
         T& operator*() {
-            return strVal;
+            return mNode->mPath;
         };
 
         bool operator !=(const  TrieIterator& rhs) {
-            return !operator==(rhs);
+            return !operator == (rhs);
         };
 
         bool operator ==(const TrieIterator& rhs) {
@@ -172,21 +184,29 @@ public:
         };
 
         TrieIterator& operator ++(){
-
-
+            if (this->mNode==Leaf || this->stackyTheLittleStack.empty()){
+                iterator ab;
+                while(this->mNode==Leaf || this->stackyTheLittleStack.empty()){
+                    ab = operator--();
+                }
+                iterator cb (mMap.find(stackyTheLittleStack.top()) -> second);
+                stackyTheLittleStack.pop();
+                return iterator(cb);
+            } else {
+                //stack holen -> naechste node -> entferne obersten eintrag von stack
+                iterator cb (mMap.find(stackyTheLittleStack.top()) -> second);
+                stackyTheLittleStack.pop();
+                return cb;
+            }
         };
         iterator& operator --(){
-
-        };
-
-        iterator operator++ (int){
-
+            key_type wo = mNode->mPath;
+            key_type res = wo.substr(0, wo.size()-1);
+            return iterator(find(res));
         };
 
     private:
-    int booze;
     std::stack<E> stackyTheLittleStack;
-        Trie* mTrie;
     };
 
     /**
@@ -215,7 +235,13 @@ public:
     * Except for the root.
     */
     void clear() {
-        
+        auto iterator = root.mappyTheLittleMap.begin();
+        while (iterator != root.mappyTheLittleMap.end()) {
+            iterator -> second -> clearTrie();
+            delete iterator -> second;
+            iterator++;
+        }
+        mappyTheLittleMap.clear();
     }
     
     /**
@@ -226,11 +252,12 @@ public:
         iterator it = begin();
         std::string word = "";
         while(it != end())  {
-            char character = *it;
+            int a = *it.length() - 1;
+            E character = *it(a);
             if(character == "#") {
                 it++
-                std::string character = *it;
-                std::cout << word << "------->" << character << std::endl;
+                std::string path = *it;
+                std::cout << word << "------->" << path << std::endl;
                 word = "";
             } else {
                 word += character;
@@ -240,25 +267,30 @@ public:
     }
 
     iterator lower_bound(const key_type& testElement) {
-        return iterator();
+        return iterator(); //dont need
     }
 
     iterator upper_bound(const key_type& testElement) {
-        return iterator();
+        return iterator(); //dont need
     }
 
     iterator find(const key_type& testElement) {
-        
+        E currentChar = testElement[0];
+        InternalNode current;
+        while (firstChar != '\0') {
+            current = mappyTheLittleMap.find(currentChar) -> second;
+            current->find(key.erase(0, 1));
+        }
+        return iterator(*current);
     }
 
     iterator begin() {
-        return iterator();
+        return iterator(*root);
     }
 
     iterator end() {
-        return iterator();
+        return iterator(*nullptr);
     }
-
 };   
 
 #endif // TRIE_H_INCLUDED
