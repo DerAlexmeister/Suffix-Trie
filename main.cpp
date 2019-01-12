@@ -12,6 +12,8 @@
 #include <chrono>
 #include <sstream>
 #include "Trie.h"
+#include <stdlib.h>
+
 
 Trie<std::string> baum;
 int input();
@@ -48,7 +50,7 @@ int main() {
                 using namespace std;
                 getline(cin, word);
                 try {
-                    //baum.erase(word);
+                    baum.erase(word);
                 } catch(...) {
                     cout << "Unable to Delete this word" << endl;
                 }
@@ -60,7 +62,7 @@ int main() {
                 cout << "You just cleared the \'Trie\'" << endl << endl;
                 break;
             case 4:
-                //baum.showTrie();
+                baum.showTrie();
                 using namespace std;
                 cout << "This is your \'Trie\'. Have fun!" << endl << endl;
                 break;
@@ -68,7 +70,7 @@ int main() {
                 std::cout << std::boolalpha << "It the \'Trie\' empty? Answer: " <<  baum.empty() << std::noboolalpha << std::endl;
                 break;
             case 6:
-                std::cout << std::boolalpha << "Find a word " <<  baum.empty() << std::noboolalpha << std::endl;
+                std::cout << std::boolalpha << "Find a word " <<  baum.empty()  << std::noboolalpha << std::endl;
                 using namespace std;
                 getline(cin, word);
                 break;

@@ -15,6 +15,7 @@
 #include <map>
 #include <stack>
 #include <cstring>
+#include <stdlib.h>
 
 template<class T, class E = char> class Trie {
 
