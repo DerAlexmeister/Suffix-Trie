@@ -37,6 +37,8 @@ public:
 
 	class _node {
 	public:
+		T mPath;
+		mappy mappyTheLittleMap;
 		virtual bool insert(key_type, T) = 0;
 		virtual bool clear() = 0;
 		virtual bool erase(const key_type& value) = 0;
@@ -77,31 +79,31 @@ public:
 			mPath = path;
 		}
 		InternalNode() = default;
-
+		//key_type =char
 		bool insert(key_type key, T value) {
-    		try {
-        		using namespace std;
-        		E currentChar = key[0];
-        		InternalNode* next;
-        		if (!currentChar == '#') {
-	        		if (mappyTheLittleMap.empty() || mappyTheLittleMap.find(currentChar) == mappyTheLittleMap.end()) {
-		       			next = new InternalNode(mPath += currentChar);
-		        		mappyTheLittleMap.insert(pair<E,_node*>(currentChar, static_cast<_node*>(next)));
-	        		} else {
-                		next = static_cast<InternalNode*>(mappyTheLittleMap.find(currentChar)->second);
-	        		}
-        		} else if (!mappyTheLittleMap.count(currentChar)) {
-	        		Leaf *last = new Leaf(value, mPath += currentChar);
-	        		mappyTheLittleMap.insert(pair<E,_node*>(currentChar, static_cast<_node*>(last)));
-	        		return true;
-       			}
-        		next->insert(key.erase(0, 1), value);
-       			return true;
-    		} catch (...) {
-        		using namespace std;
-        		cout << "An error occurred" << endl;
-        		return false;
-    		}
+			try {
+				using namespace std;
+				E currentChar = key[0];
+				InternalNode* next;
+				if (!currentChar =='#') {
+					if (mappyTheLittleMap.empty() || mappyTheLittleMap.find(currentChar) == mappyTheLittleMap.end()) {
+						next = new InternalNode(mPath += currentChar);
+						mappyTheLittleMap.insert(pair<E,_node*>(currentChar, static_cast<_node*>(next)));
+					} else {
+						next = static_cast<InternalNode*>(mappyTheLittleMap.find(currentChar)->second);
+					}
+				} else if (!mappyTheLittleMap.count(currentChar)) {
+					Leaf *last = new Leaf(value, mPath += currentChar);
+					mappyTheLittleMap.insert(pair<E,_node*>(currentChar, static_cast<_node*>(last)));
+					return true;
+				}
+				next->insert(key.erase(0, 1), value);
+				return true;
+			} catch (...) {
+				using namespace std;
+				cout << "An error occurred" << endl;
+				return false;
+			}
 		}
 
 		void clearKlausi() {
@@ -173,19 +175,23 @@ public:
 	private:
 		std::stack<E> stackyTheLittleStack;
 	public:
+
 		_node* mNode;
 		mappy mMap;
+		TrieIterator()=default;
 		TrieIterator(_node* node) {
+
 			mNode = node;
-			mMap = mNode -> mappyTheLittleMap;
-			auto ki = mMap.begin();
-			for (ki; ki != mMap.end(); ki++) {
-				int a = *ki.length() - 1;
-				E c = *ki(a);
-				stackyTheLittleStack.push(c);
+			if(std::strcmp(typeid(mNode).name(), "InternalNode") == 0){
+				InternalNode* iNode=static_cast<InternalNode*>(mNode);
+				mMap = iNode -> mappyTheLittleMap;
+				auto ki = mMap.begin();
+				while(ki!=mMap.end()) {
+					stackyTheLittleStack.push(ki->first);
+					ki++;
+				}
 			}
 		}
-
 		T& operator*() {
 			return mNode->mPath;
 		};
@@ -207,7 +213,7 @@ public:
 				while (std::strcmp(typeid(mNode).name(), "Leaf") == 0 || this->stackyTheLittleStack.empty()) {
 					ab = operator--();
 				}
-				iterator cb(mMap.find(stackyTheLittleStack.top())->second);
+				_node* cb=mMap.find(stackyTheLittleStack.top())->second;
 				stackyTheLittleStack.pop();
 				return iterator(cb);
 			} else {
@@ -239,7 +245,8 @@ public:
 	iterator insert(const value_type& value) {
 		key_type a = value.first + "#";
 		T b = value.second;
-		return root->insert(a,b);
+		root->insert(a,b);
+		return begin();
 	}
 
 	/**
@@ -269,19 +276,20 @@ public:
 		iterator it = begin();
 		std::string word = "";
 		while(it != end())  {
-			E character = it.mNode -> mPath.back();
-			if(character == "#") {
-				it++;
+			InternalNode* kNode=static_cast<InternalNode*>(it.mNode);
+			E character = kNode -> mPath.back();
+			if(character == '#') {
+				++it;
 				T path = *it;
 				std::cout << word << "------->" << path << std::endl;
 				word = "";
 			} else {
 				word += character;
-				it++;
+				++it;
 			}
 		}
 	}
-	
+
 	iterator lower_bound(const key_type& testElement) {
 		return iterator(); //dont need
 	}
@@ -301,7 +309,7 @@ public:
 	}
 
 	iterator begin() {
-		return iterator(*root);
+		return iterator(root);
 	}
 
 	iterator end() {
