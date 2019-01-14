@@ -30,11 +30,14 @@ public:
 	typedef TrieIterator iterator;
 	typedef std::map<E, _node*> mappy;
 
-	static InternalNode root;
+	InternalNode* root;
+	Trie(){
+		root = new InternalNode("");
+	};
 
 	class _node {
 	public:
-		virtual bool insert(const value_type& value) = 0;
+		virtual bool insert(key_type, T) = 0;
 		virtual bool clear() = 0;
 		virtual bool erase(const key_type& value) = 0;
 		virtual void clearKlausi() = 0;
@@ -50,7 +53,7 @@ public:
 			mPath = path;
 		}
 
-		bool insert(const value_type& value) {
+		bool insert(key_type, T) {
 			return false;
 		}
 
@@ -73,24 +76,26 @@ public:
 		InternalNode(T path) {
 			mPath = path;
 		}
+		InternalNode() = default;
 
-		bool insert(const value_type& value) {
+		bool insert(key_type key, T value) {
     		try {
         		using namespace std;
-        		E currentChar = value.first[0];
-        		_node *next;
+        		E currentChar = key[0];
+        		InternalNode* next;
         		if (!currentChar == '#') {
 	        		if (mappyTheLittleMap.empty() || mappyTheLittleMap.find(currentChar) == mappyTheLittleMap.end()) {
-		       			next = InternalNode(mPath += currentChar);
-		        		mappyTheLittleMap.insert(currentChar, next);
+		       			next = new InternalNode(mPath += currentChar);
+		        		mappyTheLittleMap.insert(pair<E,_node*>(currentChar, static_cast<_node*>(next)));
 	        		} else {
-                		next = mappyTheLittleMap.find(currentChar)->second;
+                		next = static_cast<InternalNode*>(mappyTheLittleMap.find(currentChar)->second);
 	        		}
         		} else if (!mappyTheLittleMap.count(currentChar)) {
-	        		next = Leaf(value.second, mPath += currentChar);
-	        		mappyTheLittleMap.insert(currentChar, next);
+	        		Leaf *last = new Leaf(value, mPath += currentChar);
+	        		mappyTheLittleMap.insert(pair<E,_node*>(currentChar, static_cast<_node*>(last)));
+	        		return true;
        			}
-        		next->insert(value.first.erase(0, 1), value);
+        		next->insert(key.erase(0, 1), value);
        			return true;
     		} catch (...) {
         		using namespace std;
@@ -100,7 +105,7 @@ public:
 		}
 
 		void clearKlausi() {
-			if (!root.mappyTheLittleMap.empty()) {
+			if (!mappyTheLittleMap.empty()) {
 				for (typename mappy::iterator it=mappyTheLittleMap.begin(); it!=mappyTheLittleMap.end(); it++) {
 					it -> second -> clearKlausi();
 					delete it -> second;
@@ -137,31 +142,28 @@ public:
 			string str_key = string(value) + "#";
 			cout << str_key << endl;
 			bool newDelete = true;
-			InternalNode current = root;
-			InternalNode deleteNode = current;
-			if (!(current.mappyTheLittleMap.empty())) {
+			InternalNode* current = this;
+			InternalNode* deleteNode = current;
+			if (!(current->mappyTheLittleMap.empty())) {
 				for (char& currentChar : str_key) {
-					if (current.mappyTheLittleMap.find(currentChar)
-							!= current.mappyTheLittleMap.end()) {
-						if (current.mappyTheLittleMap.size() == 1
-								&& newDelete) {
+					if (current->mappyTheLittleMap.find(currentChar) != current->mappyTheLittleMap.end()) {
+						if (current->mappyTheLittleMap.size() == 1 && newDelete) {
 							deleteNode = current;
 							newDelete = false;
-						} else if (current.mappyTheLittleMap.size() > 1) {
+						} else if (current->mappyTheLittleMap.size() > 1) {
 							newDelete = true;
 						}
 					} else {
 						return false;
 					}
-					current = current.mappyTheLittleMap.find(currentChar)->second;
+					current = static_cast<InternalNode*>(current->mappyTheLittleMap.find(currentChar)->second);
 				}
-				deleteNode.clear();
+				deleteNode->clear();
 			} else {
 				return false;
 			}
 			return false;
 		}
-
 		bool empty() {
 			return mappyTheLittleMap.empty();
 		}
@@ -227,23 +229,24 @@ public:
 	/**
 	 * Method to return whether the Map isEmpty or not
 	 */
-	bool empty() const {
-		return root.empty();
+	bool empty() {
+		return root->empty();
 	}
 
 	/**
 	 *   Insert a single InternalNode or Leaf.
 	 */
 	iterator insert(const value_type& value) {
-		value.first = value.first + "#";	
-		return root.insert(value);
+		key_type a = value.first + "#";
+		T b = value.second;
+		return root->insert(a,b);
 	}
 
 	/**
 	 *   Delete a single InternalNode or a Leaf.
 	 */
 	void erase(const key_type& value) {
-		root.erase(value);
+		root->erase(value);
 	}
 
 	/**
@@ -252,7 +255,7 @@ public:
 	 */
 	void clear() {
 		try {
-			root.clearKlausi();
+			root->clearKlausi();
 		} catch(...) {
 			std::cout << "Root has no children yet! \n";
 		}
@@ -266,8 +269,7 @@ public:
 		iterator it = begin();
 		std::string word = "";
 		while(it != end())  {
-			int a = *it.length() - 1;
-			E character = *it(a);
+			E character = it.mNode -> mPath.back();
 			if(character == "#") {
 				it++;
 				T path = *it;

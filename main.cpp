@@ -17,10 +17,6 @@
 
 Trie<std::string> baum;
 int input();
-void insertObject();
-void deleteObject();
-void eraseAll();
-void show();
 
 /**
 *  Main Method to work with the Trie.
@@ -62,7 +58,7 @@ int main() {
                 cout << "You just cleared the \'Trie\'" << endl << endl;
                 break;
             case 4:
-                baum.showTrie();
+                //baum.showTrie();
                 using namespace std;
                 cout << "This is your \'Trie\'. Have fun!" << endl << endl;
                 break;
