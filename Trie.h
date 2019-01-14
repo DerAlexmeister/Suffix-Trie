@@ -79,7 +79,6 @@ public:
 			mPath = path;
 		}
 		InternalNode() = default;
-		//key_type =char
 		bool insert(key_type key, T value) {
 			try {
 				using namespace std;
@@ -213,21 +212,21 @@ public:
 				while (std::strcmp(typeid(mNode).name(), "Leaf") == 0 || this->stackyTheLittleStack.empty()) {
 					ab = operator--();
 				}
-				_node* cb=mMap.find(stackyTheLittleStack.top())->second;
-				stackyTheLittleStack.pop();
-				return iterator(cb);
+                _node* ch = mMap.find(stackyTheLittleStack.top())->second;
+                stackyTheLittleStack.pop();
+                return iterator(ch);
 			} else {
 				//stack holen -> naechste node -> entferne obersten eintrag von stack
-				iterator cb(mMap.find(stackyTheLittleStack.top())->second);
+                _node* ch = mMap.find(stackyTheLittleStack.top())->second;
 				stackyTheLittleStack.pop();
-				return cb;
+				return iterator(ch);
 			}
 		};
 
 		iterator& operator --() {
 			key_type wo = mNode->mPath;
 			key_type res = wo.substr(0, wo.size() - 1);
-			return iterator(find(res));
+			return Trie<std::string,E>::find(res);
 		};
 
 	};
@@ -298,14 +297,14 @@ public:
 		return iterator(); //dont need
 	}
 
-	iterator find(const key_type& testElement) {
+	iterator find(key_type& testElement) {
 		E currentChar = testElement[0];
-		InternalNode current = root;
+		InternalNode* current = root;
 		while (currentChar != '\0') {
-			current = current.mappyTheLittleMap.find(currentChar)->second;
-			current->find(testElement.erase(0, 1));
+			current = static_cast<InternalNode*>(current->mappyTheLittleMap.find(currentChar)->second);
+			testElement.erase(0, 1);
 		}
-		return iterator(*current);
+		return iterator(current);
 	}
 
 	iterator begin() {

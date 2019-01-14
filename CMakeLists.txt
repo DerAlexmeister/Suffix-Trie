@@ -1,6 +1,10 @@
-cmake_minimum_required(VERSION 3.13)
-project(Trie_Algo)
+cmake_minimum_required(VERSION 3.12)
+project(c___baum)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Trie_Algo main.cpp Trie.h)
+include_directories(.)
+
+add_executable(c___baum
+        main.cpp
+        Trie.h)
