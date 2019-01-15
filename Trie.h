@@ -86,44 +86,43 @@ public:
 		int i = 0;
 
 		bool insert(key_type key, T value) {
-            std::cout << i << std::endl;
+            using namespace std;
+            cout << i << endl;
 
 			if (lalal == false) {
 				ke = key;
 				lalal = true;
 			}
 				try {
-
-					using namespace std;
-					cout << "klaus";
+                    using namespace std;
+                    cout << "klaus";
 
 					E currentChar = key[0];
 					InternalNode* next;
-					if (currentChar != '#') {
-						if (mappyTheLittleMap.empty() || mappyTheLittleMap.find(currentChar) == mappyTheLittleMap.end()) {
-							next = new InternalNode();
-							mappyTheLittleMap.insert(pair<E,_node*>(currentChar, static_cast<_node*>(next)));
 
-						} else {
-							next = static_cast<InternalNode*>(mappyTheLittleMap.find(currentChar)->second);
-
-						}
-						next->insert(key.erase(0, 1), value);
-
-						return true;
-					} else if (currentChar == '#') {
-						Leaf *last = new Leaf(ke, value);
-						i++;
-						mappyTheLittleMap.insert(pair<E,_node*>(currentChar, static_cast<_node*>(last)));
-						return true;
-					}
-					return true;
+                    using namespace std;
+                    if (currentChar == '#') {
+                        if (!mappyTheLittleMap.count(currentChar)) {
+                            Leaf* last = new Leaf(ke, value);
+                            i++;
+                            mappyTheLittleMap.insert(pair<E,_node*>(currentChar, static_cast<_node*>(last)));
+                            return true;
+                        } else {
+                            if (mappyTheLittleMap.find(currentChar) == mappyTheLittleMap.end()) {
+                            next = new InternalNode();
+                            mappyTheLittleMap.insert(pair<E,_node*>(currentChar, static_cast<_node*>(next)));
+                            } else {
+                            next = static_cast<InternalNode*>(mappyTheLittleMap.find(currentChar)->second);
+                            }
+                        }
+                        next->insert(key.erase(0, 1), value);
+                    }
 				} catch (...) {
 					using namespace std;
 					cout << "An error occurred" << endl;
 					return false;
 				}
-			}
+		}
 
 			void clearKlausi() {
 				if (!mappyTheLittleMap.empty()) {
@@ -321,13 +320,13 @@ public:
 			return iterator(); //dont need
 		}
 
-			iterator find(key_type& word) {
-				iterator it = begin();
-				while(it != end()){
-					if (getLeaf(it)->mPath == word){
-						return it;
-					}
-					++it;
+		iterator find(key_type& word) {
+		    iterator it = begin();
+		    while(it != end()){
+		        if (getLeaf(it)->mPath == word){
+		            return it;
+		        }
+		        ++it;
             }
 		}
 

@@ -30,9 +30,9 @@ int main() {
         switch(eingabe){
             case 1:
                 using namespace std;
-                cout << "Enter the word you wanna insert: ";
+                printf("Enter the word you wanna insert: ");
                 getline(cin, word);
-                cout << endl << "Enter the translation of the word : " << "(" << word << ")" << endl;
+                printf("Enter the translation of the word : ");
                 getline(cin, meaning);
                 try {
                     baum.insert(pair<basic_string<char>,string> (word,meaning));
