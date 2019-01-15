@@ -196,18 +196,32 @@ public:
             while(stackyTheLittleStack.top()++ == stackyTheLittleStack.top().end()){
                 stackyTheLittleStack.pop();
             }
+            viewTrie + '\n' + addSpace(stackyTheLittleStack.size()-1) + stackyTheLittleStack.top()++->first;
             stackyTheLittleStack.top()++->second->slideLeft();
-    };
+        };
+
+        std::string addSpace(int stackSize){
+            std::string result = "";
+            while (stackSize > 0){
+                result += " ";
+                stackSize--;
+            }
+            return result;
+        };
 
         void slideLeft(InternalNode* node){
             InternalNode* current = node;
             while(current->mappyTheLittleMap.begin()->first != '#'){
+                viewTrie + current->mappyTheLittleMap.begin()->first;
                 auto ki = current->mappyTheLittleMap.begin();
-                current = current->mappyTheLittleMap.begin()->second;
                 stackyTheLittleStack.push(ki);
+                current = current->mappyTheLittleMap.begin()->second;
             }
+            viewTrie + current->mappyTheLittleMap.begin()->first;
             auto ki = current->mappyTheLittleMap.begin();
             stackyTheLittleStack.push(ki);
+            current = current->mappyTheLittleMap.begin()->second;
+            viewTrie + " : " + static_cast<Leaf*>(current)->mMeaning;
         }
 	};
 
@@ -255,22 +269,11 @@ public:
 	 *
 	 */
 	void showTrie() {
-		iterator it = begin();
-		std::string word = "";
-		while(it != end())  {
-			InternalNode* kNode=static_cast<InternalNode*>(it.mNode);
-			E character = kNode -> mPath.back();
-			if(character == '#') {
-				++it;
-				T path = *it;
-				std::cout << word << "------->" << path << std::endl;
-				word = "";
-			} else {
-				word += character;
-				++it;
-			}
+		iterator cd = begin();
+		while(cd != end())  {
+		    ++cd;
 		}
-		printf(it.viewTrie);
+		printf(cd.viewTrie);
 	}
 
 	iterator lower_bound(const key_type& testElement) {
