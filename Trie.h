@@ -180,8 +180,8 @@ public:
 		T viewTrie = "";
 
 		T& operator*() {
-            Leaf* last = static_cast<Leaf*>(&stackyTheLittleStack.top().first->second);
-            return last->operator *();
+            Leaf* last = static_cast<Leaf*>(stackyTheLittleStack.top()->second);
+            return last->mMeaning;
 		};
 
 		bool operator !=(const TrieIterator& rhs) {
@@ -197,7 +197,8 @@ public:
                 stackyTheLittleStack.pop();
             }
             viewTrie + '\n' + addSpace(stackyTheLittleStack.size()-1) + stackyTheLittleStack.top()++->first;
-            stackyTheLittleStack.top()++->second->slideLeft();
+            slideLeft(static_cast<InternalNode*>(stackyTheLittleStack.top()++->second));
+            return *this;
         };
 
         std::string addSpace(int stackSize){
@@ -211,17 +212,19 @@ public:
 
         void slideLeft(InternalNode* node){
             InternalNode* current = node;
-            while(current->mappyTheLittleMap.begin()->first != '#'){
+            while(!current->mappyTheLittleMap.empty() && current->mappyTheLittleMap.begin()->first != '#'){
                 viewTrie + current->mappyTheLittleMap.begin()->first;
                 auto ki = current->mappyTheLittleMap.begin();
                 stackyTheLittleStack.push(ki);
-                current = current->mappyTheLittleMap.begin()->second;
+                current = static_cast<InternalNode*>(current->mappyTheLittleMap.begin()->second);
             }
-            viewTrie + current->mappyTheLittleMap.begin()->first;
-            auto ki = current->mappyTheLittleMap.begin();
-            stackyTheLittleStack.push(ki);
-            current = current->mappyTheLittleMap.begin()->second;
-            viewTrie + " : " + static_cast<Leaf*>(current)->mMeaning;
+            if (!current->mappyTheLittleMap.empty()){
+                viewTrie + current->mappyTheLittleMap.begin()->first;
+                auto ki = current->mappyTheLittleMap.begin();
+                stackyTheLittleStack.push(ki);
+                Leaf* lastL = static_cast<Leaf*>(current->mappyTheLittleMap.begin()->second);
+                viewTrie + " : " + lastL->mMeaning;
+            }
         }
 	};
 
@@ -273,7 +276,7 @@ public:
 		while(cd != end())  {
 		    ++cd;
 		}
-		printf(cd.viewTrie);
+		std::cout << cd.viewTrie << std::endl;
 	}
 
 	iterator lower_bound(const key_type& testElement) {
@@ -295,8 +298,9 @@ public:
 	}
 
 	iterator begin() {
-		return it.slideLeft(root);
-	}
+		it.slideLeft(root);
+        return it;
+    }
 
 	iterator end() {
         return ab;
