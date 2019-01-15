@@ -17,17 +17,14 @@
 using namespace std;
 Trie<string> baum;
 
-
 /**
 *  Main Method to work with the Trie.
 */
 int main() {
-baum.erase("h");
 baum.empty();
-baum.end();
+baum.insert(pair<basic_string<char>,string> ("t","test"));
 baum.showTrie();
-
-    baum.insert(pair<basic_string<char>,string> ("t","test"));
-    baum.showTrie();
+baum.erase("t");
+baum.showTrie();
 }
 

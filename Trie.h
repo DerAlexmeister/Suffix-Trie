@@ -31,9 +31,12 @@ public:
 	typedef std::map<E, _node*> mappy;
 
 	InternalNode* root;
+	TrieIterator it;
+    TrieIterator ab;
 	Trie(){
 		root = new InternalNode("");
 	};
+
 
 	class _node {
 	public:
@@ -172,27 +175,13 @@ public:
 
 	class TrieIterator {
 	private:
-		std::stack<E> stackyTheLittleStack;
+		std::stack<typename mappy::iterator> stackyTheLittleStack;
 	public:
-
-		_node* mNode;
-		mappy mMap;
 		TrieIterator()=default;
-		TrieIterator(_node* node) {
 
-			mNode = node;
-			if(std::strcmp(typeid(mNode).name(), "InternalNode") == 0){
-				InternalNode* iNode=static_cast<InternalNode*>(mNode);
-				mMap = iNode -> mappyTheLittleMap;
-				auto ki = mMap.begin();
-				while(ki!=mMap.end()) {
-					stackyTheLittleStack.push(ki->first);
-					ki++;
-				}
-			}
-		}
 		T& operator*() {
-			return mNode->mPath;
+            Leaf* last = static_cast<Leaf*>(&stackyTheLittleStack.top().first->second);
+            return last->operator *();
 		};
 
 		bool operator !=(const TrieIterator& rhs) {
@@ -200,36 +189,28 @@ public:
 		};
 
 		bool operator ==(const TrieIterator& rhs) {
-			return mMap == rhs.mMap;
+            return this->stackyTheLittleStack == rhs.stackyTheLittleStack;
 		};
 
-		/*
-		 * if (std::strcmp(typeid(next).name(),"InternalNode")==0){
-		 */
 		TrieIterator& operator ++() {
-			if (std::strcmp(typeid(mNode).name(), "Leaf") == 0 || this->stackyTheLittleStack.empty()) {
-				iterator ab;
-				while (std::strcmp(typeid(mNode).name(), "Leaf") == 0 || this->stackyTheLittleStack.empty()) {
-					ab = operator--();
-				}
-                _node* ch = mMap.find(stackyTheLittleStack.top())->second;
+            while(stackyTheLittleStack.top()++ == stackyTheLittleStack.top().end()){
                 stackyTheLittleStack.pop();
-                return iterator(ch);
-			} else {
-				//stack holen -> naechste node -> entferne obersten eintrag von stack
-                _node* ch = mMap.find(stackyTheLittleStack.top())->second;
-				stackyTheLittleStack.pop();
-				return iterator(ch);
-			}
-		};
+            }
+            stackyTheLittleStack.top()++->second->slideLeft();
+    };
 
-		iterator& operator --() {
-			key_type wo = mNode->mPath;
-			key_type res = wo.substr(0, wo.size() - 1);
-			return Trie<std::string,E>::find(res);
-		};
-
+        void slideLeft(InternalNode* node){
+            InternalNode* current = node;
+            while(current->mappyTheLittleMap.begin()->first != '#'){
+                auto ki = current->mappyTheLittleMap.begin();
+                current = current->mappyTheLittleMap.begin()->second;
+                stackyTheLittleStack.push(ki);
+            }
+            auto ki = current->mappyTheLittleMap.begin();
+            stackyTheLittleStack.push(ki);
+        }
 	};
+
 
 	/**
 	 * Method to return whether the Map isEmpty or not
@@ -245,7 +226,7 @@ public:
 		key_type a = value.first + "#";
 		T b = value.second;
 		root->insert(a,b);
-		return begin();
+		return it;
 	}
 
 	/**
@@ -254,6 +235,8 @@ public:
 	void erase(const key_type& value) {
 		root->erase(value);
 	}
+
+
 
 	/**
 	 * Method to clear the Tree.
@@ -268,7 +251,7 @@ public:
 	}
 
 	/**
-	 *  Method to
+	 *  fehlt noch
 	 *
 	 */
 	void showTrie() {
@@ -298,21 +281,21 @@ public:
 	}
 
 	iterator find(key_type& testElement) {
-		E currentChar = testElement[0];
-		InternalNode* current = root;
-		while (currentChar != '\0') {
-			current = static_cast<InternalNode*>(current->mappyTheLittleMap.find(currentChar)->second);
-			testElement.erase(0, 1);
+		iterator it = begin();
+		while(it != end()){
+		    if (it.operator*() == testElement){
+		        return it;
+		    }
+		    it++;
 		}
-		return iterator(current);
 	}
 
 	iterator begin() {
-		return iterator(root);
+		return it.slideLeft(root);
 	}
 
 	iterator end() {
-		return iterator(nullptr);
+        return ab;
 	}
 };
 
