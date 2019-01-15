@@ -23,8 +23,8 @@ Trie<string> baum;
 int main() {
 baum.empty();
 baum.insert(pair<basic_string<char>,string> ("hallo","test"));
-baum.showTrie();
-baum.erase("hallo");
-baum.showTrie();
-}
+baum.insert(pair<basic_string<char>,string> ("lha","tesscsdcscdt"));
+baum.insert(pair<basic_string<char>,string> ("ao","tedcsdcsdcdst"));
+cout << baum.root->mappyTheLittleMap.size() << endl;
 
+}

@@ -19,7 +19,7 @@
 
 template<class T, class E = char> class Trie {
 
-public:	
+public:
 	class _node;
 	class InternalNode;
 	class Leaf;
@@ -83,19 +83,20 @@ public:
 
 		bool lalal = false;
 		key_type ke;
+		int i = 0;
 
 		bool insert(key_type key, T value) {
+            std::cout << i << std::endl;
+
 			if (lalal == false) {
 				ke = key;
 				lalal = true;
 			}
-
-			//wort
-			//übersetzung
-
 				try {
+
 					using namespace std;
 					cout << "klaus";
+
 					E currentChar = key[0];
 					InternalNode* next;
 					if (currentChar != '#') {
@@ -110,8 +111,9 @@ public:
 						next->insert(key.erase(0, 1), value);
 
 						return true;
-					} else if (mappyTheLittleMap.count(currentChar)!=1) {
+					} else if (currentChar == '#') {
 						Leaf *last = new Leaf(ke, value);
+						i++;
 						mappyTheLittleMap.insert(pair<E,_node*>(currentChar, static_cast<_node*>(last)));
 						return true;
 					}
@@ -192,6 +194,11 @@ public:
 		public:
 			TrieIterator()=default;
 			std::stack<typename mappy::iterator> stackyTheLittleStack;
+			TrieIterator(std::stack<typename mappy::iterator> stacky) {
+                stackyTheLittleStack = stacky;
+			}
+
+
 			key_type viewTrie = "";
 
 			T& operator*() {
@@ -314,15 +321,15 @@ public:
 			return iterator(); //dont need
 		}
 
-		//	iterator find(key_type& word) {
-		//		iterator it = begin();
-		//		while(it != end()){
-		//			if (getLeaf(it)->mPath == word){
-		//				return it;
-		//			}
-		//			++it;
-		//		}
-		//	}
+			iterator find(key_type& word) {
+				iterator it = begin();
+				while(it != end()){
+					if (getLeaf(it)->mPath == word){
+						return it;
+					}
+					++it;
+            }
+		}
 
 		Leaf* getLeaf(TrieIterator& it){
 			typename mappy::iterator l = it.stackyTheLittleStack.top();
@@ -333,12 +340,19 @@ public:
 		}
 
 		iterator begin() {
-			it.slideLeft(root);
-			return it;
+			try {
+                it.slideLeft(root);
+                return it;
+			} catch(...) {
+                return end();
+			}
 		}
 
 		iterator end() {
-			return ab;
+		    std::stack<typename mappy::iterator> st;
+		    st.push(root->mappyTheLittleMap.end());
+		    TrieIterator i_t(st);
+		    return i_t;
 		}
 	};
 
