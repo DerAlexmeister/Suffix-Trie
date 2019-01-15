@@ -32,7 +32,6 @@ public:
 
 	InternalNode* root;
 	TrieIterator it;
-	TrieIterator ab;
 	Trie(){
 		root = new InternalNode();
 	};
@@ -191,8 +190,8 @@ public:
 	class TrieIterator {
 	public:
 		TrieIterator()=default;
-		std::stack<typename mappy::iterator> stackyTheLittleStack;
-		TrieIterator(std::stack<typename mappy::iterator> stacky) {
+		std::stack<std::pair<typename mappy::iterator,typename mappy::iterator>> stackyTheLittleStack;
+		TrieIterator(std::stack<std::pair<typename mappy::iterator, typename mappy::iterator>> stacky) {
 			stackyTheLittleStack = stacky;
 		}
 
@@ -201,7 +200,7 @@ public:
 
 		T& operator*() {
 			try {
-				Leaf* last = static_cast<Leaf*>(stackyTheLittleStack.top()->second);
+				Leaf* last = static_cast<Leaf*>(stackyTheLittleStack.top().first->second);
 				return last->mMeaning;
 			} catch (...){
 				std::cerr << "* kann nur auf ein Leaf angewendet werden" << std::endl;
@@ -217,23 +216,13 @@ public:
 		};
 
 		TrieIterator& operator ++() {
-			typename mappy::iterator ende = getEnd(*this);
-			while(stackyTheLittleStack.top()++ == ende){
+			while(stackyTheLittleStack.top().first++ == stackyTheLittleStack.top().second){
 				stackyTheLittleStack.pop();
-				ende = getEnd(*this);
 			}
-			viewTrie + '\n' + addSpace(stackyTheLittleStack.size()-1) + stackyTheLittleStack.top()++->first;
-			slideLeft(static_cast<InternalNode*>(stackyTheLittleStack.top()++->second));
+			viewTrie + '\n' + addSpace(stackyTheLittleStack.size()) + stackyTheLittleStack.top().first++->first;
+			slideLeft(static_cast<InternalNode*>(stackyTheLittleStack.top().first++->second));
 			return *this;
 		};
-
-		typename mappy::iterator getEnd(TrieIterator& copy){
-			typename mappy::iterator l = copy.stackyTheLittleStack.top();
-			copy.stackyTheLittleStack.pop();
-			typename mappy::iterator result = static_cast<InternalNode*>(copy.stackyTheLittleStack.top()->second)->mappyTheLittleMap.end();
-			copy.stackyTheLittleStack.push(l);
-			return result;
-		}
 
 		std::string addSpace(int stackSize){
 			std::string result = "";
@@ -249,13 +238,13 @@ public:
 			while(!current->mappyTheLittleMap.empty() && current->mappyTheLittleMap.begin()->first != '#'){
 				viewTrie + current->mappyTheLittleMap.begin()->first;
 				typename mappy::iterator ki = current->mappyTheLittleMap.begin();
-				stackyTheLittleStack.push(ki);
+				stackyTheLittleStack.push(std::pair<typename mappy::iterator,typename mappy::iterator> (ki,current->mappyTheLittleMap.end()));
 				current = static_cast<InternalNode*>(current->mappyTheLittleMap.begin()->second);
 			}
 			if (!current->mappyTheLittleMap.empty()){
 				viewTrie + current->mappyTheLittleMap.begin()->first;
 				typename mappy::iterator ki = current->mappyTheLittleMap.begin();
-				stackyTheLittleStack.push(ki);
+				stackyTheLittleStack.push(std::pair<typename mappy::iterator,typename mappy::iterator>(ki,current->mappyTheLittleMap.end()));
 				Leaf* lastL = static_cast<Leaf*>(current->mappyTheLittleMap.begin()->second);
 				viewTrie + " : " + lastL->mMeaning;
 			}
@@ -277,6 +266,7 @@ public:
 		key_type a = value.first;
 		T b = value.second;
 		root->insert(a,b);
+		//return find(a);
 		return it;
 	}
 
@@ -330,10 +320,7 @@ public:
 	}
 
 	Leaf* getLeaf(TrieIterator& it){
-		typename mappy::iterator l = it.stackyTheLittleStack.top();
-		it.stackyTheLittleStack.pop();
-		Leaf* result = static_cast<Leaf*>(it.stackyTheLittleStack.top()->second);
-		it.stackyTheLittleStack.push(l);
+		Leaf* result = static_cast<Leaf*>(it.stackyTheLittleStack.top().first->second);
 		return result;
 	}
 
@@ -347,8 +334,8 @@ public:
 	}
 
 	iterator end() {
-		std::stack<typename mappy::iterator> st;
-		st.push(root->mappyTheLittleMap.end());
+		std::stack<std::pair<typename mappy::iterator,typename mappy::iterator>> st;
+		st.push(std::pair<typename mappy::iterator,typename mappy::iterator>(root->mappyTheLittleMap.end(),root->mappyTheLittleMap.end()));
 		TrieIterator i_t(st);
 		return i_t;
 	}
