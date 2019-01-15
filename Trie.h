@@ -193,13 +193,23 @@ public:
 		};
 
 		TrieIterator& operator ++() {
-            while(stackyTheLittleStack.top()++ == stackyTheLittleStack.top().end()){
+		    typename mappy::iterator ende = getEnd(*this);
+            while(stackyTheLittleStack.top()++ == ende){
                 stackyTheLittleStack.pop();
+                ende = getEnd(*this);
             }
             viewTrie + '\n' + addSpace(stackyTheLittleStack.size()-1) + stackyTheLittleStack.top()++->first;
             slideLeft(static_cast<InternalNode*>(stackyTheLittleStack.top()++->second));
             return *this;
         };
+
+        typename mappy::iterator getEnd(TrieIterator& copy){
+            typename mappy::iterator l = copy.stackyTheLittleStack.top();
+            copy.stackyTheLittleStack.pop();
+            typename mappy::iterator result = static_cast<InternalNode*>(copy.stackyTheLittleStack.top()->second)->mappyTheLittleMap.end();
+            copy.stackyTheLittleStack.push(l);
+            return result;
+        }
 
         std::string addSpace(int stackSize){
             std::string result = "";
@@ -214,13 +224,13 @@ public:
             InternalNode* current = node;
             while(!current->mappyTheLittleMap.empty() && current->mappyTheLittleMap.begin()->first != '#'){
                 viewTrie + current->mappyTheLittleMap.begin()->first;
-                auto ki = current->mappyTheLittleMap.begin();
+                typename mappy::iterator ki = current->mappyTheLittleMap.begin();
                 stackyTheLittleStack.push(ki);
                 current = static_cast<InternalNode*>(current->mappyTheLittleMap.begin()->second);
             }
             if (!current->mappyTheLittleMap.empty()){
                 viewTrie + current->mappyTheLittleMap.begin()->first;
-                auto ki = current->mappyTheLittleMap.begin();
+                typename mappy::iterator ki = current->mappyTheLittleMap.begin();
                 stackyTheLittleStack.push(ki);
                 Leaf* lastL = static_cast<Leaf*>(current->mappyTheLittleMap.begin()->second);
                 viewTrie + " : " + lastL->mMeaning;
@@ -277,6 +287,7 @@ public:
 		    ++cd;
 		}
 		std::cout << cd.viewTrie << std::endl;
+        cd.viewTrie = "";
 	}
 
 	iterator lower_bound(const key_type& testElement) {
