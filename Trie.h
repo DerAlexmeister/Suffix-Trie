@@ -37,7 +37,6 @@ public:
 		root = new InternalNode("");
 	};
 
-
 	class _node {
 	public:
 		T mPath;
@@ -85,7 +84,7 @@ public:
 		bool insert(key_type key, T value) {
 			try {
 				using namespace std;
-				E currentChar = key[0];
+				E currentChar = value[0];
 				InternalNode* next;
 				if (!currentChar =='#') {
 					if (mappyTheLittleMap.empty() || mappyTheLittleMap.find(currentChar) == mappyTheLittleMap.end()) {
@@ -95,11 +94,11 @@ public:
 						next = static_cast<InternalNode*>(mappyTheLittleMap.find(currentChar)->second);
 					}
 				} else if (!mappyTheLittleMap.count(currentChar)) {
-					Leaf *last = new Leaf(value, mPath += currentChar);
+					Leaf *last = new Leaf(key, mPath += currentChar);
 					mappyTheLittleMap.insert(pair<E,_node*>(currentChar, static_cast<_node*>(last)));
 					return true;
 				}
-				next->insert(key.erase(0, 1), value);
+				next->insert(key, value.erase(0, 1));
 				return true;
 			} catch (...) {
 				using namespace std;
@@ -178,6 +177,7 @@ public:
 		std::stack<typename mappy::iterator> stackyTheLittleStack;
 	public:
 		TrieIterator()=default;
+		T viewTrie = "";
 
 		T& operator*() {
             Leaf* last = static_cast<Leaf*>(&stackyTheLittleStack.top().first->second);
@@ -223,10 +223,10 @@ public:
 	 *   Insert a single InternalNode or Leaf.
 	 */
 	iterator insert(const value_type& value) {
-		key_type a = value.first + "#";
-		T b = value.second;
+		key_type a = value.first;
+		T b = value.second + "#";
 		root->insert(a,b);
-		return it;
+		return find(a);
 	}
 
 	/**
@@ -270,6 +270,7 @@ public:
 				++it;
 			}
 		}
+		printf(it.viewTrie);
 	}
 
 	iterator lower_bound(const key_type& testElement) {
@@ -286,7 +287,7 @@ public:
 		    if (it.operator*() == testElement){
 		        return it;
 		    }
-		    it++;
+		    ++it;
 		}
 	}
 
