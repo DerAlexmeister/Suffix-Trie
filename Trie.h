@@ -278,10 +278,7 @@ public:
 		}
 	}
 
-	/**
-	 *  fehlt noch
-	 *
-	 */
+
 	void showTrie() {
 		iterator cd = begin();
 		while(cd != end())  {
