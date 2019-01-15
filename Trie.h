@@ -34,8 +34,10 @@ public:
 	TrieIterator it;
     TrieIterator ab;
 	Trie(){
-		root = new InternalNode("");
+		root = new InternalNode();
 	};
+
+	~Trie() = default;
 
 	class _node {
 	public:
@@ -50,11 +52,11 @@ public:
 	class Leaf: public _node {
 	public:
 		mappy mappyTheLittleMap;
-		key_type mMeaning;
-		T mPath;
-		Leaf(key_type value, T path) {
-			mMeaning = value;
+		key_type mPath;
+		T mMeaning;
+		Leaf(key_type path, T meaning) {
 			mPath = path;
+            mMeaning = meaning;
 		}
 
 		bool insert(key_type, T) {
@@ -75,30 +77,26 @@ public:
 	class InternalNode: public _node {
 	public:
 		mappy mappyTheLittleMap;
-		T mPath;
 
-		InternalNode(T path) {
-			mPath = path;
-		}
 		InternalNode() = default;
 		bool insert(key_type key, T value) {
 			try {
 				using namespace std;
-				E currentChar = value[0];
+				E currentChar = key[0];
 				InternalNode* next;
 				if (!currentChar =='#') {
 					if (mappyTheLittleMap.empty() || mappyTheLittleMap.find(currentChar) == mappyTheLittleMap.end()) {
-						next = new InternalNode(mPath += currentChar);
+						next = new InternalNode();
 						mappyTheLittleMap.insert(pair<E,_node*>(currentChar, static_cast<_node*>(next)));
 					} else {
 						next = static_cast<InternalNode*>(mappyTheLittleMap.find(currentChar)->second);
 					}
 				} else if (!mappyTheLittleMap.count(currentChar)) {
-					Leaf *last = new Leaf(key, mPath += currentChar);
+					Leaf *last = new Leaf(key, value);
 					mappyTheLittleMap.insert(pair<E,_node*>(currentChar, static_cast<_node*>(last)));
 					return true;
 				}
-				next->insert(key, value.erase(0, 1));
+				next->insert(key.erase(0, 1), value);
 				return true;
 			} catch (...) {
 				using namespace std;
@@ -140,9 +138,9 @@ public:
 			mappyTheLittleMap.clear();
 		}
 
-		bool erase(const key_type& value) {
+		bool erase(const key_type& word) {
 			using namespace std;
-			string str_key = string(value) + "#";
+			string str_key = string(word) + "#";
 			cout << str_key << endl;
 			bool newDelete = true;
 			InternalNode* current = this;
@@ -173,15 +171,18 @@ public:
 	};
 
 	class TrieIterator {
-	private:
-		std::stack<typename mappy::iterator> stackyTheLittleStack;
 	public:
 		TrieIterator()=default;
+        std::stack<typename mappy::iterator> stackyTheLittleStack;
 		T viewTrie = "";
 
 		T& operator*() {
-            Leaf* last = static_cast<Leaf*>(stackyTheLittleStack.top()->second);
-            return last->mMeaning;
+            try {
+                Leaf* last = static_cast<Leaf*>(stackyTheLittleStack.top()->second);
+                return last->mMeaning;
+            } catch (...){
+                std::cerr << "* kann nur auf ein Leaf angewendet werden" << std::endl;
+            }
 		};
 
 		bool operator !=(const TrieIterator& rhs) {
@@ -251,7 +252,7 @@ public:
 	 */
 	iterator insert(const value_type& value) {
 		key_type a = value.first;
-		T b = value.second + "#";
+		T b = value.second;
 		root->insert(a,b);
 		return find(a);
 	}
@@ -298,15 +299,23 @@ public:
 		return iterator(); //dont need
 	}
 
-	iterator find(key_type& testElement) {
+	iterator find(key_type& word) {
 		iterator it = begin();
 		while(it != end()){
-		    if (it.operator*() == testElement){
+		    if (getLeaf(it)->mPath == word){
 		        return it;
 		    }
 		    ++it;
 		}
 	}
+
+    Leaf* getLeaf(TrieIterator& it){
+        typename mappy::iterator l = it.stackyTheLittleStack.top();
+        it.stackyTheLittleStack.pop();
+        Leaf* result = static_cast<Leaf*>(it.stackyTheLittleStack.top()->second);
+        it.stackyTheLittleStack.push(l);
+        return result;
+    }
 
 	iterator begin() {
 		it.slideLeft(root);
