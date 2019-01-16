@@ -256,8 +256,12 @@ public:
 	void showTrie() {
         iterator it = begin();
         for(it; it != end(); ++it) {
-            std::cout << getLeaf(it)->mPath << std::endl;
-            std::cout << getLeaf(it)->mMeaning << std::endl;
+            Leaf* result;
+            if (std::strcmp(typeid(it.stackyTheLittleStack.top().first->second).name(), "Leaf") == 0){
+                result = static_cast<Leaf*>(it.stackyTheLittleStack.top().first->second);
+                std::cout << result->mPath << std::endl;
+                std::cout << result->mMeaning << std::endl;
+            }
         }
 	}
 
