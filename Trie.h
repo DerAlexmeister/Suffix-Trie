@@ -312,11 +312,6 @@ public:
 		}
 	}
 
-	Leaf* getLeaf(TrieIterator& it){
-		Leaf* result = static_cast<Leaf*>(it.stackyTheLittleStack.top().first->second);
-		return result;
-	}
-
 	iterator begin() {
 		try {
 			it.slideLeft(root);
