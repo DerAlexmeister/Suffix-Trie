@@ -22,12 +22,24 @@ Trie<string> baum;
 *  Main Method to work with the Trie.
 */
 int main() {
-    baum.insert(pair<const basic_string<char>,string> ("test#","#test#"));
-    baum.insert(pair<const basic_string<char>,string> ("klaus#","#klaus#"));
-    baum.insert(pair<const basic_string<char>,string> ("fack#","#fack#"));
-    baum.insert(pair<const basic_string<char>,string> ("fuck#","#fuck#"));
-    cout << baum.begin().operator *();
+    baum.insert(pair<const basic_string<char>,string> ("a","Meaning:a"));
+    baum.insert(pair<const basic_string<char>,string> ("b","Meaning:b"));
+    baum.insert(pair<const basic_string<char>,string> ("c","Meaning:c"));
+    baum.insert(pair<const basic_string<char>,string> ("d","Meaning:d"));
+    cout << baum.root->mappyTheLittleMap.size()<< endl;
+
+//
+//    for (auto it=baum.root->mappyTheLittleMap.begin(); it!=baum.root->mappyTheLittleMap.end(); ++it){
+//        std::cout << it->first << std::endl;
+//    }
 
 
+
+    cout << "a"<< baum.begin().operator *() << endl;
+    cout << "b"<< baum.begin().operator ++().operator *()<< endl;
+    cout << "c"<< baum.begin().operator ++().operator ++().operator *()<< endl;
+    cout << "d"<< baum.begin().operator ++().operator ++().operator ++().operator *()<< endl;
+
+     baum.showTrie();
 }
 

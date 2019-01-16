@@ -215,14 +215,29 @@ public:
 			return this->stackyTheLittleStack == rhs.stackyTheLittleStack;
 		};
 
+//		TrieIterator& operator ++() {
+//			while(stackyTheLittleStack.top().first++ == stackyTheLittleStack.top().second){
+//				stackyTheLittleStack.pop();
+//			}
+//			viewTrie + '\n' + addSpace(stackyTheLittleStack.size()) + stackyTheLittleStack.top().first++->first;
+//			slideLeft(static_cast<InternalNode*>(stackyTheLittleStack.top().first++->second));
+//			return *this;
+//		};
 		TrieIterator& operator ++() {
-			while(stackyTheLittleStack.top().first++ == stackyTheLittleStack.top().second){
-				stackyTheLittleStack.pop();
-			}
-			viewTrie + '\n' + addSpace(stackyTheLittleStack.size()) + stackyTheLittleStack.top().first++->first;
-			slideLeft(static_cast<InternalNode*>(stackyTheLittleStack.top().first++->second));
-			return *this;
-		};
+					popStack();
+					viewTrie += '\n' + addSpace(stackyTheLittleStack.size()) += stackyTheLittleStack.top().first->first;
+					slideLeft(static_cast<InternalNode*>(stackyTheLittleStack.top().first->second));
+					return *this;
+				};
+
+				void popStack() {
+					typename mappy::iterator topIter = ++(stackyTheLittleStack.top().first);
+					typename mappy::iterator topEnd = (stackyTheLittleStack.top().second);
+					if (topIter == topEnd) {
+						stackyTheLittleStack.pop();
+						popStack();
+					}
+				}
 
 		std::string addSpace(int stackSize){
 			std::string result = "";
@@ -263,7 +278,7 @@ public:
 	 *   Insert a single InternalNode or Leaf.
 	 */
 	iterator insert(const value_type& value) {
-		key_type a = value.first;
+		key_type a = value.first + '#';
 		T b = value.second;
 		root->insert(a,b);
 		//return find(a);
@@ -294,8 +309,10 @@ public:
 
 	void showTrie() {
 		iterator cd = begin();
-		while(cd != end())  {
+		iterator ed = cd;
+ 		while(cd != end() && ++ed != end())  {
 			++cd;
+			ed=cd;
 		}
 		std::cout << cd.viewTrie << std::endl;
 		cd.viewTrie = "";
