@@ -26,14 +26,15 @@ int main() {
     baum.insert(pair<const basic_string<char>,string> ("b","Meaning:b"));
     baum.insert(pair<const basic_string<char>,string> ("c","Meaning:c"));
     baum.insert(pair<const basic_string<char>,string> ("d","Meaning:d"));
-    cout << baum.root->mappyTheLittleMap.size()<< endl;
 
+    //cout << baum.root->mappyTheLittleMap.size()<< endl;
 
-    baum.erase("afg");
+    //basic_string<char> klaus = "afg";
+    //std::cout << baum.find(klaus).operator*() << std::endl;;
 
-    for (auto it=baum.root->mappyTheLittleMap.begin(); it!=baum.root->mappyTheLittleMap.end(); ++it){
-        std::cout << it->first << std::endl;
-    }
+    //for (auto it=baum.root->mappyTheLittleMap.begin(); it!=baum.root->mappyTheLittleMap.end(); ++it){
+    //    std::cout << it->first << std::endl;
+    //}
 
 
     //baum.clear();

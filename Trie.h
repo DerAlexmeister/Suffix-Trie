@@ -42,7 +42,7 @@ public:
 	public:
 		T mPath;
 		mappy mappyTheLittleMap;
-		virtual bool insert(key_type, T) = 0;
+		virtual bool insert(key_type, mapped_type , key_type) = 0;
 		virtual bool erase(const key_type& value) = 0;
 		virtual void clear() = 0;
 	};
@@ -53,12 +53,12 @@ public:
 		mappy mappyTheLittleMap;
 		key_type mPath;
 		T mMeaning;
-		Leaf(key_type path, T meaning) {
+		Leaf(key_type path, mapped_type meaning) {
 			mPath = path;
 			mMeaning = meaning;
 		}
 
-		bool insert(key_type, T) {
+		bool insert(key_type, mapped_type , key_type) {
 			return false;
 		}
 
@@ -75,18 +75,9 @@ public:
 		~InternalNode()=default;
 		InternalNode() = default;
 
-		bool lalal = false;
-		key_type ke;
-		int i = 0;
-
-		bool insert(key_type key, T value) {
+		bool insert(key_type key, mapped_type value, key_type leafWord) {
 			using namespace std;
 
-
-			if (lalal == false) {
-				ke = key;
-				lalal = true;
-			}
 			try {
 				using namespace std;
 				E currentChar = key[0];
@@ -95,8 +86,7 @@ public:
 				using namespace std;
 				if (currentChar == '#') {
 					if (!mappyTheLittleMap.count(currentChar)) {
-						Leaf* last = new Leaf(ke, value);
-						i++;
+						Leaf* last = new Leaf(leafWord, value);
 						mappyTheLittleMap.insert(pair<E,_node*>(currentChar, static_cast<_node*>(last)));
 						return true;
 					}
@@ -108,7 +98,7 @@ public:
 						next = static_cast<InternalNode*>(mappyTheLittleMap.find(currentChar)->second);
 					}
 
-					next->insert(key.erase(0, 1), value);
+					next->insert(key.erase(0, 1), value, leafWord);
 				}
 			} catch (...) {
 				using namespace std;
@@ -240,11 +230,12 @@ public:
 	 *   Insert a single InternalNode or Leaf.
 	 */
 	iterator insert(const value_type& value) {
-		key_type a = value.first + '#';
-		T b = value.second;
-		root->insert(a,b);
-		//return find(a);
-		return it;
+		key_type word = value.first + '#';
+        key_type leafWord = value.first + '#';
+        key_type findLeafWithWord = value.first;
+		mapped_type meaning = value.second;
+		root->insert(word,meaning,leafWord);
+		return find(findLeafWithWord);
 	}
 
 	/**
@@ -290,8 +281,13 @@ public:
 
 	iterator find(key_type& word) {
 		iterator it = begin();
+
 		while(it != end()){
-			if (getLeaf(it)->mPath == word){
+            Leaf* last = static_cast<Leaf*>(it.stackyTheLittleStack.top().first->second);
+            key_type leafWord = last->mPath;
+            key_type wordToCheck = word + '#';
+            std::cout << leafWord << " " << std::endl;
+			if (leafWord == wordToCheck){
 				return it;
 			}
 			++it;
