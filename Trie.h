@@ -262,24 +262,35 @@ public:
 	}
 
 	iterator lower_bound(const key_type& testElement) {
-        std::stack<std::pair<typename mappy::iterator, typename mappy::iterator>> iteratorStack;
-        iteratorStack = root->find(testElement, iteratorStack);
-        if (iteratorStack.empty()) {
-            return end();
+        iterator it = begin();
+
+        while(it != end()){
+            Leaf* last = static_cast<Leaf*>(it.stackyTheLittleStack.top().first->second);
+            key_type leafWord = last->mPath;
+            if (leafWord.find(testElement) != std::string::npos){
+                return it;
+            }
+            ++it;
         }
-        TrieIterator it(iteratorStack);
-        return it;
+        return end();
 	}
 
 	iterator upper_bound(const key_type& testElement) {
-        std::stack<std::pair<typename mappy::iterator, typename mappy::iterator>> iteratorStack;
-        iteratorStack = root->find(testElement, iteratorStack);
-        if (iteratorStack.empty()) {
+        try {
+            iterator it = begin();
+            TrieIterator ab();
+            while(it != end()){
+                Leaf* last = static_cast<Leaf*>(it.stackyTheLittleStack.top().first->second);
+                key_type leafWord = last->mPath;
+                if (leafWord.find(testElement) != std::string::npos){
+                    ab = it;
+                }
+                ++it;
+            }
+            return ++ab();
+        } catch (...){
             return end();
         }
-        ++iteratorStack.top().first;
-        TrieIterator it(iteratorStack);
-        return it;
 	}
 
 	iterator find(key_type& word) {
