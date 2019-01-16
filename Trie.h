@@ -32,6 +32,7 @@ public:
 
 	InternalNode* root;
 	TrieIterator it;
+
 	Trie(){
 		root = new InternalNode();
 	};
@@ -40,8 +41,6 @@ public:
 
 	class _node {
 	public:
-		T mPath;
-		mappy mappyTheLittleMap;
 		virtual bool insert(key_type, mapped_type , key_type) = 0;
 		virtual bool erase(const key_type& value) = 0;
 		virtual void clear() = 0;
@@ -49,24 +48,18 @@ public:
 
 	class Leaf: public _node {
 	public:
+        key_type mPath;
+        T mMeaning;
+
 		~Leaf()=default;
-		mappy mappyTheLittleMap;
-		key_type mPath;
-		T mMeaning;
-		Leaf(key_type path, mapped_type meaning) {
-			mPath = path;
-			mMeaning = meaning;
-		}
+        Leaf(key_type path, mapped_type meaning) {
+            mPath = path;
+            mMeaning = meaning;
+        }
 
-		bool insert(key_type, mapped_type , key_type) {
-			return false;
-		}
-
-		bool erase(const key_type& value) {
-			return false;
-		}
-
-		void clear() {}
+        bool insert(key_type, mapped_type , key_type) {return false;}
+        bool erase(const key_type& value) {return false;}
+        void clear() {}
 	};
 
 	class InternalNode: public _node {
@@ -261,22 +254,32 @@ public:
 
 
 	void showTrie() {
-		iterator cd = begin();
-		iterator ed = cd;
- 		while(cd != end() && ++ed != end())  {
-			++cd;
-			ed=cd;
-		}
-		std::cout << cd.viewTrie << std::endl;
-		cd.viewTrie = "";
+        iterator it = begin();
+        for(it; it != end(); ++it) {
+            std::cout << getLeaf(it)->mPath << std::endl;
+            std::cout << getLeaf(it)->mMeaning << std::endl;
+        }
 	}
 
 	iterator lower_bound(const key_type& testElement) {
-		return iterator(); //dont need
+        std::stack<std::pair<typename mappy::iterator, typename mappy::iterator>> iteratorStack;
+        iteratorStack = root->find(testElement, iteratorStack);
+        if (iteratorStack.empty()) {
+            return end();
+        }
+        TrieIterator it(iteratorStack);
+        return it;
 	}
 
 	iterator upper_bound(const key_type& testElement) {
-		return iterator(); //dont need
+        std::stack<std::pair<typename mappy::iterator, typename mappy::iterator>> iteratorStack;
+        iteratorStack = root->find(testElement, iteratorStack);
+        if (iteratorStack.empty()) {
+            return end();
+        }
+        ++iteratorStack.top().first;
+        TrieIterator it(iteratorStack);
+        return it;
 	}
 
 	iterator find(key_type& word) {

@@ -44,6 +44,6 @@ int main() {
     //cout << "c"<< baum.begin().operator ++().operator ++().operator *()<< endl;
     //cout << "d"<< baum.begin().operator ++().operator ++().operator ++().operator *()<< endl;
 
-     //baum.showTrie();
+     baum.showTrie();
 }
 
