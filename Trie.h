@@ -43,9 +43,8 @@ public:
 		T mPath;
 		mappy mappyTheLittleMap;
 		virtual bool insert(key_type, T) = 0;
-		virtual bool clear() = 0;
 		virtual bool erase(const key_type& value) = 0;
-		virtual void clearKlausi() = 0;
+		virtual void clear() = 0;
 	};
 
 	class Leaf: public _node {
@@ -63,15 +62,11 @@ public:
 			return false;
 		}
 
-		bool clear(){
-			return false;
-		}
-
 		bool erase(const key_type& value) {
 			return false;
 		}
 
-		void clearKlausi() {}
+		void clear() {}
 	};
 
 	class InternalNode: public _node {
@@ -122,66 +117,41 @@ public:
 			}
 		}
 
-		void clearKlausi() {
+		void clear() {
 			if (!mappyTheLittleMap.empty()) {
 				for (typename mappy::iterator it=mappyTheLittleMap.begin(); it!=mappyTheLittleMap.end(); it++) {
-					it -> second -> clearKlausi();
+					it -> second -> clear();
 					delete it -> second;
 				}
 				mappyTheLittleMap.clear();
 			}
 		}
 
-		bool clear() {
-			_node* next = mappyTheLittleMap.begin()->second;
-			mappyTheLittleMap.clear();
-			delete this;
-			if (std::strcmp(typeid(next).name(), "InternalNode") == 0) {
-				next->clear();
-			} else if (std::strcmp(typeid(next).name(), "Leaf") == 0) {
-				delete next;
-				return true;
-			}
-			return false;
-		}
-
-		void clearTrie() {
-			auto iterator = mappyTheLittleMap.begin();
-			while (iterator != mappyTheLittleMap.end()) {
-				iterator->second->clear();
-				delete iterator->second;
-				iterator++;
-			}
-			mappyTheLittleMap.clear();
-		}
-
 		bool erase(const key_type& word) {
 			using namespace std;
-			string str_key = string(word) + "#";
-			cout << str_key << endl;
-			bool newDelete = true;
+			string str_key = string(word) + '#';
+			char deleteChar;
 			InternalNode* current = this;
 			InternalNode* deleteNode = current;
 			if (!(current->mappyTheLittleMap.empty())) {
 				for (char& currentChar : str_key) {
 					if (current->mappyTheLittleMap.find(currentChar) != current->mappyTheLittleMap.end()) {
-						if (current->mappyTheLittleMap.size() == 1 && newDelete) {
-							deleteNode = current;
-							newDelete = false;
-						} else if (current->mappyTheLittleMap.size() > 1) {
-							newDelete = true;
-						}
-					} else {
-						return false;
-					}
-					current = static_cast<InternalNode*>(current->mappyTheLittleMap.find(currentChar)->second);
-				}
-				deleteNode->clear();
+                        if (current->mappyTheLittleMap.size() > 1) {
+                            deleteNode = current;
+                            deleteChar = currentChar;
+                        } else {
+                            current = static_cast<InternalNode *>(current->mappyTheLittleMap.find(currentChar)->second);
+                        }
+                    }
+                }
+                deleteNode->mappyTheLittleMap.find(deleteChar)->second->clear();
+                deleteNode->mappyTheLittleMap.erase(deleteNode->mappyTheLittleMap.find(deleteChar));
 			} else {
-				return false;
+			    return false;
 			}
-			return false;
 		}
+
+
 		bool empty() {
 			return mappyTheLittleMap.empty();
 		}
@@ -215,14 +185,6 @@ public:
 			return this->stackyTheLittleStack == rhs.stackyTheLittleStack;
 		};
 
-//		TrieIterator& operator ++() {
-//			while(stackyTheLittleStack.top().first++ == stackyTheLittleStack.top().second){
-//				stackyTheLittleStack.pop();
-//			}
-//			viewTrie + '\n' + addSpace(stackyTheLittleStack.size()) + stackyTheLittleStack.top().first++->first;
-//			slideLeft(static_cast<InternalNode*>(stackyTheLittleStack.top().first++->second));
-//			return *this;
-//		};
 		TrieIterator& operator ++() {
 					popStack();
 					viewTrie += '\n' + addSpace(stackyTheLittleStack.size()) += stackyTheLittleStack.top().first->first;
@@ -300,7 +262,7 @@ public:
 	 */
 	void clear() {
 		try {
-			root->clearKlausi();
+			root->clear();
 		} catch(...) {
 			std::cout << "Root has no children yet! \n";
 		}
