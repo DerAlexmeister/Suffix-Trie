@@ -43,6 +43,7 @@ public:
 		virtual bool insert(key_type, mapped_type , key_type) = 0;
 		virtual bool erase(key_type& value) = 0;
 		virtual void clear() = 0;
+
 	};
 
 	class Leaf: public _node {
@@ -98,15 +99,17 @@ public:
 				return false;
 			}
 		}
+
 		bool erase(key_type &value) {
 			E curChar = value[0];
+			auto mappyIt=mappyTheLittleMap.find(curChar);
 			if (curChar != '#') { //Not a leaf
-				if (!mappyTheLittleMap.empty() && mappyTheLittleMap.find(curChar) != mappyTheLittleMap.end()) { //key in map
-					return mappyTheLittleMap.find(curChar).operator*().second->erase(value.erase(0, 1));
+				if (!mappyTheLittleMap.empty() && mappyTheLittleMap.find(curChar) != mappyTheLittleMap.end()) {
+					mappyTheLittleMap.erase(curChar);
+					mappyIt.operator*().second->erase(value.erase(0, 1));
 				}
-				//Key not in map, return false
 			} else {
-				if (mappyTheLittleMap.erase(curChar) == 1) { //Erase value and return true if something was erased
+				if (mappyTheLittleMap.erase(curChar) == 1) {
 					return true;
 				}
 			}
@@ -122,7 +125,6 @@ public:
 				mappyTheLittleMap.clear();
 			}
 		}
-
 
 		bool empty() {
 			return mappyTheLittleMap.empty();
@@ -189,25 +191,6 @@ public:
 				opCheck=false;
 			}
 		}
-		void popStackErase() {
-			typename mappy::iterator topIter = ++(stackyTheLittleStack.top().first);
-			typename mappy::iterator topEnd = (stackyTheLittleStack.top().second);
-			if (topIter == topEnd &&stackyTheLittleStack.size()>1 ) {
-				stackyTheLittleStack.pop();
-				popStackErase();
-			}else if(topIter != topEnd){
-				--(stackyTheLittleStack.top().first);
-			}
-		}
-
-		std::string addSpace(int stackSize){
-			std::string result = "";
-			while (stackSize > 0){
-				result += " ";
-				stackSize--;
-			}
-			return result;
-		};
 
 		void slideLeft(InternalNode* node){
 			int leer =0;
@@ -226,7 +209,6 @@ public:
 				current = static_cast<InternalNode*>(current->mappyTheLittleMap.begin()->second);
 				leer++;
 			}
-			//			std::cout<<current->mappyTheLittleMap.begin()->first<<std::endl;
 
 			if (!current->mappyTheLittleMap.empty()){
 				if(current->mappyTheLittleMap.begin()->first=='#'){
