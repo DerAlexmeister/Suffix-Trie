@@ -78,7 +78,8 @@ public:
 		mappy mappyTheLittleMap;
 		~InternalNode()=default;
 		InternalNode() = default;
-
+		key_type viewTrie = "";
+		
 		/**
 		* Insert will insert a Word into the Tree.
 		* This method will create Nodes with charactars until the very end is reach reprecented by the '#' Charactar.
