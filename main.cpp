@@ -7,6 +7,7 @@
 //============================================================================
 
 #include <iostream>
+#include <typeinfo>
 #include <string>
 #include <thread>
 #include <chrono>
@@ -22,28 +23,24 @@ Trie<string> baum;
 *  Main Method to work with the Trie.
 */
 int main() {
-    baum.insert(pair<const basic_string<char>,string> ("afg","Meaning:a"));
-    baum.insert(pair<const basic_string<char>,string> ("b","Meaning:b"));
-    baum.insert(pair<const basic_string<char>,string> ("c","Meaning:c"));
-    baum.insert(pair<const basic_string<char>,string> ("d","Meaning:d"));
+	basic_string<char> car="mario";
+    baum.insert(pair<const basic_string<char>,string> ("klau","M_klau"));
+    baum.insert(pair<const basic_string<char>,string> ("klaus","M_klaus"));
+    baum.insert(pair<const basic_string<char>,string> ("mario","M_mario"));
+baum.erase(car);
+//   baum.erase(car);
+   baum.showTrie();
+//baum.erase(car);
+//cout <<baum.root->mappyTheLittleMap.begin();
+//    baum.showTrie();
+//    baum.begin();
+//cout <<"Wort: "<<baum.begin().show()<<endl;
+//cout <<"Übersetzung: " <<baum.begin().operator *()<<endl;
+//cout <<"Wort: "<<baum.begin().operator ++().show()<<endl;
+//cout <<"Übersetzung: " <<baum.begin().operator ++().operator *()<<endl;
+//cout <<"Wort: "<<baum.begin().operator ++().operator ++().show()<<endl;
+//cout <<"Übersetzung: " <<baum.begin().operator ++().operator ++().operator *()<<endl;
 
-    //cout << baum.root->mappyTheLittleMap.size()<< endl;
-
-    //basic_string<char> klaus = "afg";
-    //std::cout << baum.find(klaus).operator*() << std::endl;;
-
-    //for (auto it=baum.root->mappyTheLittleMap.begin(); it!=baum.root->mappyTheLittleMap.end(); ++it){
-    //    std::cout << it->first << std::endl;
-    //}
-
-
-    //baum.clear();
-    //cout << std::boolalpha << "Find a word " <<  baum.empty() << std::noboolalpha << std::endl;
-    //cout << "a"<< baum.begin().operator *() << endl;
-    //cout << "b"<< baum.begin().operator ++().operator *()<< endl;
-    //cout << "c"<< baum.begin().operator ++().operator ++().operator *()<< endl;
-    //cout << "d"<< baum.begin().operator ++().operator ++().operator ++().operator *()<< endl;
-
-     baum.showTrie();
+//
 }
 

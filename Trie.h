@@ -31,7 +31,6 @@ public:
 	typedef std::map<E, _node*> mappy;
 
 	InternalNode* root;
-	TrieIterator it;
 
 	Trie(){
 		root = new InternalNode();
@@ -42,24 +41,24 @@ public:
 	class _node {
 	public:
 		virtual bool insert(key_type, mapped_type , key_type) = 0;
-		virtual bool erase(const key_type& value) = 0;
+		virtual bool erase(key_type& value) = 0;
 		virtual void clear() = 0;
 	};
 
 	class Leaf: public _node {
 	public:
-        key_type mPath;
-        T mMeaning;
+		key_type mPath;
+		T mMeaning;
 
 		~Leaf()=default;
-        Leaf(key_type path, mapped_type meaning) {
-            mPath = path;
-            mMeaning = meaning;
-        }
+		Leaf(key_type path, mapped_type meaning) {
+			mPath = path;
+			mMeaning = meaning;
+		}
 
-        bool insert(key_type, mapped_type , key_type) {return false;}
-        bool erase(const key_type& value) {return false;}
-        void clear() {}
+		bool insert(key_type, mapped_type , key_type) {return false;}
+		bool erase(key_type& value) {return false;}
+		void clear() {}
 	};
 
 	class InternalNode: public _node {
@@ -99,38 +98,28 @@ public:
 				return false;
 			}
 		}
+		bool erase(key_type &value) {
+			E curChar = value[0];
+			if (curChar != '#') { //Not a leaf
+				if (!mappyTheLittleMap.empty() && mappyTheLittleMap.find(curChar) != mappyTheLittleMap.end()) { //key in map
+					return mappyTheLittleMap.find(curChar).operator*().second->erase(value.erase(0, 1));
+				}
+				//Key not in map, return false
+			} else {
+				if (mappyTheLittleMap.erase(curChar) == 1) { //Erase value and return true if something was erased
+					return true;
+				}
+			}
+			return false;
+		}
 
 		void clear() {
 			if (!mappyTheLittleMap.empty()) {
-				for (typename mappy::iterator it=mappyTheLittleMap.begin(); it!=mappyTheLittleMap.end(); it++) {
-					it -> second -> clear();
-					delete it -> second;
+				for (typename mappy::iterator clearIt=mappyTheLittleMap.begin(); clearIt!=mappyTheLittleMap.end(); clearIt++) {
+					clearIt -> second -> clear();
+					delete clearIt -> second;
 				}
 				mappyTheLittleMap.clear();
-			}
-		}
-
-		bool erase(const key_type& word) {
-			using namespace std;
-			string str_key = string(word) + '#';
-			char deleteChar;
-			InternalNode* current = this;
-			InternalNode* deleteNode = current;
-			if (!(current->mappyTheLittleMap.empty())) {
-				for (char& currentChar : str_key) {
-					if (current->mappyTheLittleMap.find(currentChar) != current->mappyTheLittleMap.end()) {
-                        if (current->mappyTheLittleMap.size() > 1) {
-                            deleteNode = current;
-                            deleteChar = currentChar;
-                        } else {
-                            current = static_cast<InternalNode *>(current->mappyTheLittleMap.find(currentChar)->second);
-                        }
-                    }
-                }
-                deleteNode->mappyTheLittleMap.find(deleteChar)->second->clear();
-                deleteNode->mappyTheLittleMap.erase(deleteNode->mappyTheLittleMap.find(deleteChar));
-			} else {
-			    return false;
 			}
 		}
 
@@ -160,29 +149,56 @@ public:
 			}
 		};
 
+		T& show() {
+			try {
+				Leaf* last = static_cast<Leaf*>(stackyTheLittleStack.top().first->second);
+				return last->mPath;
+			} catch (...){
+				std::cerr << "* kann nur auf ein Leaf angewendet werden" << std::endl;
+			}
+		};
+
 		bool operator !=(const TrieIterator& rhs) {
 			return !operator ==(rhs);
 		};
 
-		bool operator ==(const TrieIterator& rhs) {
-			return this->stackyTheLittleStack == rhs.stackyTheLittleStack;
+		bool operator ==(const iterator& rhs) const {
+			return (stackyTheLittleStack.size() == rhs.stackyTheLittleStack.size() && stackyTheLittleStack.top().second == rhs.stackyTheLittleStack.top().second && stackyTheLittleStack.top().first == rhs.stackyTheLittleStack.top().first);
+		}
+
+		bool opCheck=false;
+		TrieIterator& operator ++() {
+			popStack();
+			if(opCheck){
+				std::cout<< stackyTheLittleStack.top().first->first<<std::endl;
+				slideLeft(static_cast<InternalNode*>(stackyTheLittleStack.top().first->second));
+			}
+			return *this;
 		};
 
-		TrieIterator& operator ++() {
-					popStack();
-					viewTrie += '\n' + addSpace(stackyTheLittleStack.size()) += stackyTheLittleStack.top().first->first;
-					slideLeft(static_cast<InternalNode*>(stackyTheLittleStack.top().first->second));
-					return *this;
-				};
-
-				void popStack() {
-					typename mappy::iterator topIter = ++(stackyTheLittleStack.top().first);
-					typename mappy::iterator topEnd = (stackyTheLittleStack.top().second);
-					if (topIter == topEnd) {
-						stackyTheLittleStack.pop();
-						popStack();
-					}
-				}
+		void popStack() {
+			opCheck=false;
+			typename mappy::iterator topIter = ++(stackyTheLittleStack.top().first);
+			typename mappy::iterator topEnd = (stackyTheLittleStack.top().second);
+			if (topIter == topEnd &&stackyTheLittleStack.size()>1 ) {
+				stackyTheLittleStack.pop();
+				popStack();
+			}else if(topIter != topEnd){
+				opCheck=true;
+			}else{
+				opCheck=false;
+			}
+		}
+		void popStackErase() {
+			typename mappy::iterator topIter = ++(stackyTheLittleStack.top().first);
+			typename mappy::iterator topEnd = (stackyTheLittleStack.top().second);
+			if (topIter == topEnd &&stackyTheLittleStack.size()>1 ) {
+				stackyTheLittleStack.pop();
+				popStackErase();
+			}else if(topIter != topEnd){
+				--(stackyTheLittleStack.top().first);
+			}
+		}
 
 		std::string addSpace(int stackSize){
 			std::string result = "";
@@ -194,19 +210,47 @@ public:
 		};
 
 		void slideLeft(InternalNode* node){
+			int leer =0;
+			int tmp;
 			InternalNode* current = node;
 			while(!current->mappyTheLittleMap.empty() && current->mappyTheLittleMap.begin()->first != '#'){
-				viewTrie + current->mappyTheLittleMap.begin()->first;
+				tmp=leer;
+				while(leer!=0){
+					leer--;
+					std::cout<<"_";
+				}
+				leer=tmp;
+				std::cout<<current->mappyTheLittleMap.begin()->first<<std::endl;
 				typename mappy::iterator ki = current->mappyTheLittleMap.begin();
 				stackyTheLittleStack.push(std::pair<typename mappy::iterator,typename mappy::iterator> (ki,current->mappyTheLittleMap.end()));
 				current = static_cast<InternalNode*>(current->mappyTheLittleMap.begin()->second);
+				leer++;
 			}
+			//			std::cout<<current->mappyTheLittleMap.begin()->first<<std::endl;
+
 			if (!current->mappyTheLittleMap.empty()){
-				viewTrie + current->mappyTheLittleMap.begin()->first;
+				if(current->mappyTheLittleMap.begin()->first=='#'){
+					tmp=leer;
+					while(leer!=0){
+						leer--;
+						std::cout<<"_";
+					}
+					leer=tmp;
+				}else{
+					std::cout << current->mappyTheLittleMap.begin()->first<<std::endl;
+				}
+
+
 				typename mappy::iterator ki = current->mappyTheLittleMap.begin();
 				stackyTheLittleStack.push(std::pair<typename mappy::iterator,typename mappy::iterator>(ki,current->mappyTheLittleMap.end()));
 				Leaf* lastL = static_cast<Leaf*>(current->mappyTheLittleMap.begin()->second);
-				viewTrie + " : " + lastL->mMeaning;
+				tmp=leer;
+				while(leer!=0){
+					leer--;
+					std::cout<<"_";
+				}
+				leer=tmp;
+				std::cout<< " : " <<lastL->mMeaning<<std::endl;
 			}
 		}
 	};
@@ -224,8 +268,8 @@ public:
 	 */
 	iterator insert(const value_type& value) {
 		key_type word = value.first + '#';
-        key_type leafWord = value.first + '#';
-        key_type findLeafWithWord = value.first;
+		key_type leafWord = value.first + '#';
+		key_type findLeafWithWord = value.first;
 		mapped_type meaning = value.second;
 		root->insert(word,meaning,leafWord);
 		return find(findLeafWithWord);
@@ -234,10 +278,21 @@ public:
 	/**
 	 *   Delete a single InternalNode or a Leaf.
 	 */
-	void erase(const key_type& value) {
-		root->erase(value);
-	}
 
+
+	void showTrie(){
+		if(!empty()){
+			std::cout <<"\n"<< "---ShowTrie---"<<std::endl;
+			iterator showTrieIt=begin();
+			while(showTrieIt!=end()){
+				++showTrieIt;
+			}
+			std::cout <<"\n"<< "----------"<<std::endl;
+		}else{
+			std::cout <<"\n"<< "ein leerer baum wird nicht geprintet"<<std::endl;
+		}
+
+	}
 
 
 	/**
@@ -253,80 +308,79 @@ public:
 	}
 
 
-	void showTrie() {
-        iterator it = begin();
-        for(it; it != end(); ++it) {
-            Leaf* result;
-            if (std::strcmp(typeid(it.stackyTheLittleStack.top().first->second).name(), "Leaf") == 0){
-                result = static_cast<Leaf*>(it.stackyTheLittleStack.top().first->second);
-                std::cout << result->mPath << std::endl;
-                std::cout << result->mMeaning << std::endl;
-            }
-        }
-	}
+
 
 	iterator lower_bound(const key_type& testElement) {
-        iterator it = begin();
-
-        while(it != end()){
-            Leaf* last = static_cast<Leaf*>(it.stackyTheLittleStack.top().first->second);
-            key_type leafWord = last->mPath;
-            if (leafWord.find(testElement) != std::string::npos){
-                return it;
-            }
-            ++it;
-        }
-        return end();
+		iterator lowerBoundIt = begin();
+		while(lowerBoundIt != end()){
+			Leaf* last = static_cast<Leaf*>(lowerBoundIt.stackyTheLittleStack.top().first->second);
+			key_type leafWord = last->mPath;
+			if (leafWord.find(testElement) != std::string::npos){
+				return lowerBoundIt;
+			}
+			++lowerBoundIt;
+		}
+		return end();
 	}
 
 	iterator upper_bound(const key_type& testElement) {
-        try {
-            iterator it = begin();
-            TrieIterator ab();
-            while(it != end()){
-                Leaf* last = static_cast<Leaf*>(it.stackyTheLittleStack.top().first->second);
-                key_type leafWord = last->mPath;
-                if (leafWord.find(testElement) != std::string::npos){
-                    ab = it;
-                }
-                ++it;
-            }
-            return ++ab();
-        } catch (...){
-            return end();
-        }
+		try {
+			iterator upperBoundIt = begin();
+			TrieIterator ab();
+			while(upperBoundIt){
+				Leaf* last = static_cast<Leaf*>(upperBoundIt.stackyTheLittleStack.top().first->second);
+				key_type leafWord = last->mPath;
+				if (leafWord.find(testElement) != std::string::npos){
+					ab = upperBoundIt;
+				}
+				++upperBoundIt;
+			}
+			return ++ab();
+		} catch (...){
+			return end();
+		}
 	}
 
 	iterator find(key_type& word) {
-		iterator it = begin();
+		iterator findIt = begin();
+		if(!empty()){
+			while(findIt != end()){
+				Leaf* last = static_cast<Leaf*>(findIt.stackyTheLittleStack.top().first->second);
+				key_type leafWord = last->mPath;
+				key_type wordToCheck = word + '#';
 
-		while(it != end()){
-            Leaf* last = static_cast<Leaf*>(it.stackyTheLittleStack.top().first->second);
-            key_type leafWord = last->mPath;
-            key_type wordToCheck = word + '#';
-            std::cout << leafWord << " " << std::endl;
-			if (leafWord == wordToCheck){
-				return it;
+				if (leafWord == wordToCheck){
+					return findIt;
+				}
+				++findIt;
 			}
-			++it;
 		}
+
+		return end();
 	}
 
 	iterator begin() {
 		try {
-			it.slideLeft(root);
-			return it;
+			iterator beginIt;
+			beginIt.slideLeft(root);
+			return beginIt;
 		} catch(...) {
 			return end();
 		}
 	}
 
 	iterator end() {
-		std::stack<std::pair<typename mappy::iterator,typename mappy::iterator>> st;
-		st.push(std::pair<typename mappy::iterator,typename mappy::iterator>(root->mappyTheLittleMap.end(),root->mappyTheLittleMap.end()));
-		TrieIterator i_t(st);
-		return i_t;
+		std::stack<std::pair<typename mappy::iterator,typename mappy::iterator>> endStack;
+		endStack.push(std::pair<typename mappy::iterator,typename mappy::iterator>(root->mappyTheLittleMap.end(),root->mappyTheLittleMap.end()));
+		TrieIterator endIt(endStack);
+		return endIt;
 	}
+
+	bool erase(const key_type& value) {
+		key_type tmp = value + "#";
+		root->erase(tmp);
+	}
+
 };
 
 #endif // TRIE_H_INCLUDED
