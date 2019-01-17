@@ -38,6 +38,9 @@ public:
 
 	~Trie() = default;
 
+	/**
+	* Abstract Class Node 
+	*/
 	class _node {
 	public:
 		virtual bool insert(key_type, mapped_type , key_type) = 0;
@@ -45,6 +48,11 @@ public:
 		virtual void clear() = 0;
 	};
 
+	/**
+	* Class Leaf extends abstract Class node.
+	* Leaf implements all methods of the Class node.
+	* Leaf represents a the last element of a branch containing the Translation of a word
+	*/
 	class Leaf: public _node {
 	public:
 		key_type mPath;
@@ -61,12 +69,21 @@ public:
 		void clear() {}
 	};
 
+	/**
+	* Class InternalNode implements Class node.
+	* Internal Node reprecents a single Charactar.
+	*/
 	class InternalNode: public _node {
 	public:
 		mappy mappyTheLittleMap;
 		~InternalNode()=default;
 		InternalNode() = default;
 
+		/**
+		* Insert will insert a Word into the Tree.
+		* This method will create Nodes with charactars until the very end is reach reprecented by the '#' Charactar.
+		* At the end a Leaf will be attached.
+		*/
 		bool insert(key_type key, mapped_type value, key_type leafWord) {
 			using namespace std;
 
@@ -98,6 +115,12 @@ public:
 				return false;
 			}
 		}
+
+		/**
+		* Erase will erase a word form the tree.
+		* It will erase the branch, the leaf and the terminate charactar.
+		*
+		*/
 		bool erase(key_type &value) {
 			E curChar = value[0];
 			if (curChar != '#') { //Not a leaf
@@ -113,6 +136,10 @@ public:
 			return false;
 		}
 
+		/**
+		* Clear will clear a branch.
+		*   
+		*/
 		void clear() {
 			if (!mappyTheLittleMap.empty()) {
 				for (typename mappy::iterator clearIt=mappyTheLittleMap.begin(); clearIt!=mappyTheLittleMap.end(); clearIt++) {
@@ -123,23 +150,33 @@ public:
 			}
 		}
 
-
+		/**
+		* Method to check whether the map is empty or not.
+		*/
 		bool empty() {
 			return mappyTheLittleMap.empty();
 		}
 	};
 
+	/**
+	* Class TrieIterator will represent a Iterator-Class for the Trie.
+	*/
 	class TrieIterator {
 	public:
 		TrieIterator()=default;
 		std::stack<std::pair<typename mappy::iterator,typename mappy::iterator>> stackyTheLittleStack;
+		key_type viewTrie = "";
+
+		/**
+		* Constructor for the TrieIterator.
+		*/
 		TrieIterator(std::stack<std::pair<typename mappy::iterator, typename mappy::iterator>> stacky) {
 			stackyTheLittleStack = stacky;
 		}
 
-
-		key_type viewTrie = "";
-
+		/**
+		* operator* will represent the meaning of a leaf in case it is called.
+		*/
 		T& operator*() {
 			try {
 				Leaf* last = static_cast<Leaf*>(stackyTheLittleStack.top().first->second);
@@ -149,6 +186,9 @@ public:
 			}
 		};
 
+		/**
+		* Method to return mPath of this leaf.
+		*/
 		T& show() {
 			try {
 				Leaf* last = static_cast<Leaf*>(stackyTheLittleStack.top().first->second);
@@ -158,15 +198,27 @@ public:
 			}
 		};
 
+		/**
+		* Is-Not-Equal for to TrieIterator.
+		* Will return true in case the iterators are not equal.
+		*/
 		bool operator !=(const TrieIterator& rhs) {
 			return !operator ==(rhs);
 		};
 
+		/**
+		* Is-Equal for to TrieIterator.
+		* Will return true in case the iterators are equal.
+		*/
 		bool operator ==(const iterator& rhs) const {
 			return (stackyTheLittleStack.size() == rhs.stackyTheLittleStack.size() && stackyTheLittleStack.top().second == rhs.stackyTheLittleStack.top().second && stackyTheLittleStack.top().first == rhs.stackyTheLittleStack.top().first);
 		}
 
 		bool opCheck=false;
+
+		/**
+		* Increment operator.
+		*/
 		TrieIterator& operator ++() {
 			popStack();
 			if(opCheck){
@@ -176,6 +228,10 @@ public:
 			return *this;
 		};
 
+		/**
+		*   Method to pop the top of the Stack.
+		*   Method works recrusive.
+		*/
 		void popStack() {
 			opCheck=false;
 			typename mappy::iterator topIter = ++(stackyTheLittleStack.top().first);
@@ -189,6 +245,11 @@ public:
 				opCheck=false;
 			}
 		}
+
+		/**
+		*   Method to pop the top of the Stack and erase.
+		*   Method works recrusive.
+		*/
 		void popStackErase() {
 			typename mappy::iterator topIter = ++(stackyTheLittleStack.top().first);
 			typename mappy::iterator topEnd = (stackyTheLittleStack.top().second);
@@ -200,6 +261,10 @@ public:
 			}
 		}
 
+		/**
+		*   Method to add whitespaces.
+		*   Method works recrusive.
+		*/
 		std::string addSpace(int stackSize){
 			std::string result = "";
 			while (stackSize > 0){
@@ -209,6 +274,10 @@ public:
 			return result;
 		};
 
+
+		/**
+		* Method to go straigth down leaf.
+		*/		
 		void slideLeft(InternalNode* node){
 			int leer =0;
 			int tmp;
@@ -307,9 +376,9 @@ public:
 		}
 	}
 
-
-
-
+	/**
+	* LowerBound of the trie.
+	*/
 	iterator lower_bound(const key_type& testElement) {
 		iterator lowerBoundIt = begin();
 		while(lowerBoundIt != end()){
@@ -323,6 +392,9 @@ public:
 		return end();
 	}
 
+	/**
+	* UpperBound of the trie.
+	*/
 	iterator upper_bound(const key_type& testElement) {
 		try {
 			iterator upperBoundIt = begin();
@@ -341,6 +413,10 @@ public:
 		}
 	}
 
+	/**
+	* Method to find a word in the trie.
+	*
+	*/
 	iterator find(key_type& word) {
 		iterator findIt = begin();
 		if(!empty()){
@@ -359,6 +435,9 @@ public:
 		return end();
 	}
 
+	/**
+	* Begin-Element for the Trie-Iterator.
+	*/
 	iterator begin() {
 		try {
 			iterator beginIt;
@@ -369,6 +448,9 @@ public:
 		}
 	}
 
+	/**
+	* End-Element of the Trie-Iterator.
+	*/
 	iterator end() {
 		std::stack<std::pair<typename mappy::iterator,typename mappy::iterator>> endStack;
 		endStack.push(std::pair<typename mappy::iterator,typename mappy::iterator>(root->mappyTheLittleMap.end(),root->mappyTheLittleMap.end()));
@@ -376,6 +458,10 @@ public:
 		return endIt;
 	}
 
+	/**
+	* Erase a word of the trie.
+	* will return true in case the word could be erased.
+	*/
 	bool erase(const key_type& value) {
 		key_type tmp = value + "#";
 		root->erase(tmp);
