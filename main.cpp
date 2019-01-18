@@ -17,46 +17,31 @@
 
 
 Trie<std::string> baum;
+int input();
 
 /**
 *  Main Method to work with the Trie.
 */
 int main() {
-<<<<<<< HEAD
-using namespace std;
-    basic_string<char> car = "klaus";
-    baum.insert(pair<const basic_string<char>, string>("klau", "M_klau"));
-    baum.insert(pair<const basic_string<char>, string>("klaus", "M_klaus"));
-    baum.insert(pair<const basic_string<char>, string>("mario", "M_mario"));
-    //baum.erase(car);
-baum.erase(car);
-    baum.showTrie();
-//baum.erase(car);
-//cout <<baum.root->mappyTheLittleMap.begin();
-//    baum.showTrie();
-//    baum.begin();
-//cout <<"Wort: "<<baum.begin().show()<<endl;
-//cout <<"�bersetzung: " <<baum.begin().operator *()<<endl;
-//cout <<"Wort: "<<baum.begin().operator ++().show()<<endl;
-//cout <<"�bersetzung: " <<baum.begin().operator ++().operator *()<<endl;
-//cout <<"Wort: "<<baum.begin().operator ++().operator ++().show()<<endl;
-//cout <<"�bersetzung: " <<baum.begin().operator ++().operator ++().operator *()<<endl;
-}
-=======
+
     int eingabe = -1;
-    std::string word;
-    std::string meaning;
+    std::string word = " ";
+    std::string meaning = " ";
+    std::basic_string<char> a;
+    std::string b;
     while (eingabe != 0){
         eingabe = input();
         switch(eingabe){
             case 1:
                 using namespace std;
-                cout << "Enter the word you wanna insert: ";
-                getline(cin, word);
-                cout << endl << "Enter the translation of the word : " << "(" << word << ")" << endl;
-                getline(cin, meaning);
+
+                cout<<"enter word   ";
+                cin>>a;
+
+                cout<<"enter meaning   ";
+                cin>>b;
                 try {
-                    baum.insert(pair<const basic_string<char>,string> (word, meaning));
+                    baum.insert(pair<const basic_string<char>,string> (a, b));
                     cout << "Added " << word << " to \'Trie\'";
                 }catch (...) {
                     cout << "unable to Add a Word";
@@ -98,7 +83,7 @@ baum.erase(car);
                 return 0;
             default:
                 using namespace std;
-                cout << "Wrong input, please enter another number between 1. - 6." << endl;
+                cout << "Wrong input, please enter another number between 1. - 7." << endl;
                 cout << endl << endl;
                 break;
         }
@@ -125,4 +110,3 @@ int input() {
     cin >> eingabe;
     return eingabe;
 }
->>>>>>> 69ab81d68a943cb37da2f498fe92145b0b350242

@@ -118,14 +118,11 @@ public:
 			}
 		}
 
-<<<<<<< HEAD
-=======
 		/**
 		* Erase will erase a word form the tree.
 		* It will erase the branch, the leaf and the terminate charactar.
 		*
 		*/
->>>>>>> 69ab81d68a943cb37da2f498fe92145b0b350242
 		bool erase(key_type &value) {
 			E curChar = value[0];
 			auto mappyIt=mappyTheLittleMap.find(curChar);
@@ -156,12 +153,9 @@ public:
 			}
 		}
 
-<<<<<<< HEAD
-=======
 		/**
 		* Method to check whether the map is empty or not.
 		*/
->>>>>>> 69ab81d68a943cb37da2f498fe92145b0b350242
 		bool empty() {
 			return mappyTheLittleMap.empty();
 		}
@@ -254,38 +248,6 @@ public:
 				opCheck=false;
 			}
 		}
-<<<<<<< HEAD
-=======
-
-		/**
-		*   Method to pop the top of the Stack and erase.
-		*   Method works recrusive.
-		*/
-		void popStackErase() {
-			typename mappy::iterator topIter = ++(stackyTheLittleStack.top().first);
-			typename mappy::iterator topEnd = (stackyTheLittleStack.top().second);
-			if (topIter == topEnd &&stackyTheLittleStack.size()>1 ) {
-				stackyTheLittleStack.pop();
-				popStackErase();
-			}else if(topIter != topEnd){
-				--(stackyTheLittleStack.top().first);
-			}
-		}
-
-		/**
-		*   Method to add whitespaces.
-		*   Method works recrusive.
-		*/
-		std::string addSpace(int stackSize){
-			std::string result = "";
-			while (stackSize > 0){
-				result += " ";
-				stackSize--;
-			}
-			return result;
-		};
->>>>>>> 69ab81d68a943cb37da2f498fe92145b0b350242
-
 
 		/**
 		* Method to go straigth down leaf.
